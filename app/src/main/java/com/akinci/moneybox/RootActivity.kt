@@ -10,6 +10,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.airbnb.lottie.LottieAnimationView
+import com.akinci.moneybox.common.storage.IntentParams
 import com.akinci.moneybox.databinding.ActivityRootBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,7 +19,6 @@ class RootActivity : AppCompatActivity() {
 
     private lateinit var navigationController: NavController
     private lateinit var binding : ActivityRootBinding
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,5 +40,12 @@ class RootActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         binding.toolbar.setupWithNavController(navigationController, appBarConfiguration)
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+
+        // direct login case for 401 unAuthorized service calls
+        // start from splash or login fragment ???
+        // TODO - decide :)
+        var isDirectLogin = intent.getBooleanExtra(IntentParams.DIRECT_LOGIN, false)
+        isDirectLogin = false
+
     }
 }
