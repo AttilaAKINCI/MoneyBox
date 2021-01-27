@@ -1,5 +1,6 @@
 package com.akinci.moneybox.feaure.login.viewmodel
 
+import android.text.TextUtils
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,13 +28,20 @@ class LoginViewModel @ViewModelInject constructor(
     var password = MutableLiveData<String>("P455word12")
     var name = MutableLiveData<String>("Jaeren")
 
+//    var email = MutableLiveData<String>()
+//    var password = MutableLiveData<String>()
+//    var name = MutableLiveData<String>()
+
     init {
         Timber.d("LoginViewModel created..")
     }
 
-    fun login() = viewModelScope.launch {
-        // TODO input validation has to be done here ....
+    fun activateValidation(){
+        if(TextUtils.isEmpty(email.value)){ email.value = "" }
+        if(TextUtils.isEmpty(password.value)){ password.value = ""}
+    }
 
+    fun login() = viewModelScope.launch {
         val request = LoginServiceRequest(
             email.value!!,
             password.value!!,

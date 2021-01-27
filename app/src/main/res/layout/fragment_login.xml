@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:transitionGroup="true">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,7 +48,8 @@
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="@={vm.email}"/>
+                android:text="@={vm.email}"
+                notEmptyValid="@{vm.email}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,7 +63,7 @@
             android:layout_marginTop="@dimen/margin_default"
             android:transitionGroup="true">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,7 +72,8 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="@={vm.password}"/>
+                android:text="@={vm.password}"
+                notEmptyValid="@{vm.password}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -85,7 +87,7 @@
             android:layout_marginTop="@dimen/margin_default"
             android:transitionGroup="true">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
