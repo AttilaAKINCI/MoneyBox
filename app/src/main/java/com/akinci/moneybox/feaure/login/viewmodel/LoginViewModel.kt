@@ -37,6 +37,7 @@ class LoginViewModel @ViewModelInject constructor(
     }
 
     fun activateValidation(){
+        // initially fires the validations
         if(TextUtils.isEmpty(email.value)){ email.value = "" }
         if(TextUtils.isEmpty(password.value)){ password.value = ""}
     }
