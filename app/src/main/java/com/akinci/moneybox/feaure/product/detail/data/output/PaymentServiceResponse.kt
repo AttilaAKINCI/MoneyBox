@@ -1,4 +1,4 @@
-package com.akinci.moneybox.feaure.product.data.output.payment
+package com.akinci.moneybox.feaure.product.payment.data.output
 
 import com.squareup.moshi.JsonClass
 
