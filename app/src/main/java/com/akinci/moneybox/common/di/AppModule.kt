@@ -76,12 +76,12 @@ object AppModule {
             val logger = HttpLoggingInterceptor()
             logger.level = HttpLoggingInterceptor.Level.BODY
 
-            val bearerToken = sharedPreferences.getStoredTag(PrefConfig.AUTH_TOKEN)
-
             OkHttpClient.Builder()
                 .addInterceptor(logger)
                 .addInterceptor(object : Interceptor {
                     override fun intercept(chain: Interceptor.Chain): Response {
+                        val bearerToken = sharedPreferences.getStoredTag(PrefConfig.AUTH_TOKEN)
+
                         val newRequest = chain.request().newBuilder()
                                 .addHeader("AppId", BuildConfig.APP_ID)
                                 .addHeader("Content-Type", BuildConfig.CONTENT_TYPE)
@@ -95,10 +95,9 @@ object AppModule {
                         if(response.code == 401){
                             // bearer token expired..
                             // restart navigation graph.
-                            // TODO - this case will be tested
-                            // send snackBar if it possible.
                             val intent = Intent(context, RootActivity::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             intent.putExtra(IntentParams.DIRECT_LOGIN, true)
                             startActivity(context, intent, null)
                         }
