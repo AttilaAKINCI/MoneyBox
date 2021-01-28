@@ -3,8 +3,7 @@ package com.akinci.moneybox.common.helper
 /** Keeps network request status during kotlin coroutine calls **/
 enum class ResourceStatus {
     SUCCESS,
-    ERROR,
-    LOADING
+    ERROR
 }
 
 /** Network request state identifier class **/
@@ -21,12 +20,6 @@ data class Resource<out T>(val resourceStatus: ResourceStatus, val data: T?, val
                         resourceStatus = ResourceStatus.ERROR,
                         data = data,
                         message = message
-                )
-        fun <T> loading(data: T? = null): Resource<T> =
-                Resource(
-                        resourceStatus = ResourceStatus.LOADING,
-                        data = data,
-                        message = null
                 )
     }
 }

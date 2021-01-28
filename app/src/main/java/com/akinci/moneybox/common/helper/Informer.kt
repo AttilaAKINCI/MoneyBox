@@ -3,7 +3,9 @@ package com.akinci.moneybox.common.helper
 /** Keeps fragment - viewModel event status **/
 enum class InformerStatus {
     SUCCESS,
-    ERROR
+    ERROR,
+    LOADING,
+    NO_DATA
 }
 
 /** Fragment viewModel state identifier class **/
@@ -20,6 +22,18 @@ data class Informer<out T>(val status: InformerStatus, val data: T?, val message
                 status = InformerStatus.ERROR,
                 data = data,
                 message = message
+            )
+        fun <T> loading(data: T? = null): Informer<T> =
+            Informer(
+                status = InformerStatus.LOADING,
+                data = data,
+                message = null
+            )
+        fun <T> noData(data: T? = null): Informer<T> =
+            Informer(
+                status = InformerStatus.NO_DATA,
+                data = data,
+                message = null
             )
     }
 }
