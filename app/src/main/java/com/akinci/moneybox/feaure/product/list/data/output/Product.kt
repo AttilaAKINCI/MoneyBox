@@ -1,4 +1,4 @@
-package com.akinci.moneybox.feaure.product.data.output.product
+package com.akinci.moneybox.feaure.product.list.data.output
 
 import com.squareup.moshi.JsonClass
 
@@ -11,12 +11,12 @@ data class Product(
     val DepositLimit: Double,
     val Documents: Documents,
     val FriendlyName: String,
-    val Fund: Fund,
+    val Fund: Fund?,
     val Id: Int,
-    val InterestRate: String,
-    val InterestRateAmount: Double,
-    val Lisa: Lisa,
-    val LogoUrl: String,
+    val InterestRate: String?,
+    val InterestRateAmount: Double?,
+    val Lisa: Lisa?,
+    val LogoUrl: String?,
     val MaximumWeeklyDeposit: Double,
     val MinimumWeeklyDeposit: Double,
     val Name: String,

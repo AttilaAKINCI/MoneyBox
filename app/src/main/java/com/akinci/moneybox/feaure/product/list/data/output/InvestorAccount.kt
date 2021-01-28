@@ -1,4 +1,4 @@
-package com.akinci.moneybox.feaure.product.data.output.product
+package com.akinci.moneybox.feaure.product.list.data.output
 
 import com.squareup.moshi.JsonClass
 
@@ -7,5 +7,5 @@ data class InvestorAccount(
     val ContributionsNet: Double,
     val EarningsAsPercentage: Double,
     val EarningsNet: Double,
-    val TodaysInterest: Double
+    val TodaysInterest: Double?
 )
