@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.NavHostFragment
 import com.akinci.moneybox.common.helper.Informer
 import com.akinci.moneybox.common.helper.ResourceStatus
 import com.akinci.moneybox.common.storage.LocalPreferences
@@ -69,9 +70,6 @@ class LoginViewModel @ViewModelInject constructor(
             ResourceStatus.ERROR -> {
                 // pass error message to fragment
                 _loginEventHandler.postValue(Informer.error(response.message ?: "", null))
-            }
-            else -> {
-                _loginEventHandler.postValue(Informer.error("Unknown error", null))
             }
         }
 

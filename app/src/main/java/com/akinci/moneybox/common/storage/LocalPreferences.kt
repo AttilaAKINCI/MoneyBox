@@ -7,8 +7,8 @@ import javax.inject.Inject
 class LocalPreferences @Inject constructor(
     val context : Context
 ){
-    val PREF_TAG  = context.packageName + "_preferences"
-    val prefs = context.getSharedPreferences(PREF_TAG, MODE_PRIVATE)
+    private val prefTag  = context.packageName + "_preferences"
+    private val prefs = context.getSharedPreferences(prefTag, MODE_PRIVATE)
 
     fun getStoredTag(key: String): String {
         return prefs.getString(key, "")!!

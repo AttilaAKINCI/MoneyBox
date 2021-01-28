@@ -8,10 +8,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.airbnb.lottie.LottieAnimationView
 import com.akinci.moneybox.common.storage.IntentParams
 import com.akinci.moneybox.databinding.ActivityRootBinding
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,9 +31,7 @@ class RootActivity : AppCompatActivity() {
         // tell navigation controller that which fragments will be at the top of backstack
         // (hides backbutton for fragments which are placed at top)
         val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.splashFragment,
-                R.id.loginFragment)
+            setOf(R.id.splashFragment, R.id.loginFragment, R.id.productListFragment)
         )
 
         // remove extra padding between arrow and toolbar title
@@ -44,8 +44,10 @@ class RootActivity : AppCompatActivity() {
         // direct login case for 401 unAuthorized service calls
         // start from splash or login fragment ???
         // TODO - decide :)
-        var isDirectLogin = intent.getBooleanExtra(IntentParams.DIRECT_LOGIN, false)
-        isDirectLogin = false
+        val isDirectLogin = intent.getBooleanExtra(IntentParams.DIRECT_LOGIN, false)
+        if(isDirectLogin){
+            Snackbar.make(binding.root, "Your login session is expired. Please login again.", Snackbar.LENGTH_LONG).show()
+        }
 
     }
 }

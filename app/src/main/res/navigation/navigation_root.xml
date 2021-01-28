@@ -16,5 +16,34 @@
         android:id="@+id/loginFragment"
         android:name="com.akinci.moneybox.feaure.login.view.LoginFragment"
         android:label="@string/login_title" >
+        <action
+            android:id="@+id/action_loginFragment_to_productListFragment"
+            app:destination="@id/productListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/productListFragment"
+        android:name="com.akinci.moneybox.feaure.product.list.view.ProductListFragment"
+        android:label="{titleList}" >
+        <action
+            android:id="@+id/action_productListFragment_to_productDetailFragment"
+            app:destination="@id/productDetailFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"/>
+        <argument
+            android:name="titleList"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/productDetailFragment"
+        android:name="com.akinci.moneybox.feaure.product.detail.view.ProductDetailFragment"
+        android:label="{titleDetail}" >
+        <argument
+            android:name="productId"
+            app:argType="integer" />
+        <argument
+            android:name="titleDetail"
+            app:argType="string" />
     </fragment>
 </navigation>
