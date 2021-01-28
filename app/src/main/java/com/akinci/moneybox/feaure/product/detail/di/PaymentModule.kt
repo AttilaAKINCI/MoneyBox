@@ -1,9 +1,9 @@
-package com.akinci.moneybox.feaure.product.payment.di
+package com.akinci.moneybox.feaure.product.detail.di
 
 import com.akinci.moneybox.common.network.NetworkChecker
-import com.akinci.moneybox.feaure.product.payment.data.api.PaymentServiceDao
-import com.akinci.moneybox.feaure.product.payment.repository.PaymentRepository
-import com.akinci.moneybox.feaure.product.payment.repository.PaymentRepositoryImpl
+import com.akinci.moneybox.feaure.product.detail.data.api.PaymentServiceDao
+import com.akinci.moneybox.feaure.product.detail.repository.PaymentRepository
+import com.akinci.moneybox.feaure.product.detail.repository.PaymentRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

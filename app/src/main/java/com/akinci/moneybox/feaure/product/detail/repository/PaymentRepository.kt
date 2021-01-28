@@ -1,4 +1,4 @@
-package com.akinci.moneybox.feaure.product.payment.repository
+package com.akinci.moneybox.feaure.product.detail.repository
 
 interface PaymentRepository {
 }
