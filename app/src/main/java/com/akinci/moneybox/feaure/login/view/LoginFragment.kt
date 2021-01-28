@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.NavHostFragment
 import androidx.transition.Fade
 import androidx.transition.Transition
@@ -36,6 +37,7 @@ class LoginFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = loginViewModel
 
         /** view transition configuration **/
@@ -48,6 +50,11 @@ class LoginFragment : Fragment() {
         enterFade.startDelay = 1000
         enterFade.duration = 300
         enterTransition = enterFade
+
+        val exitFade = Fade()
+        exitFade.startDelay = 0
+        exitFade.duration = 300
+        exitTransition = exitFade
         /** **/
 
         binding.btnSignIn.setOnClickListener {
@@ -66,30 +73,42 @@ class LoginFragment : Fragment() {
             }
         }
 
-        loginViewModel.loginEventHandler.observe(viewLifecycleOwner, {
-          when(it.status){
-              InformerStatus.SUCCESS -> {
-                  Timber.d("Login successful..")
-                  Snackbar.make(binding.root,  "login attempt is successful, navigating to dashboard(products)", Snackbar.LENGTH_LONG).show()
-
-                  // login attempt is successful, navigating to dashboard(products)
-
-                  NavHostFragment.findNavController(this).navigate(
-                          LoginFragmentDirections.actionLoginFragmentToProductListFragment(
-                                  resources.getString(R.string.product_title)),
-                          NavOptions.Builder().setPopUpTo(R.id.loginFragment, true).build()
-                  )
-              }
-              InformerStatus.ERROR -> {
-                  Timber.d("Login failed.. ${it.message ?: "Empty Error"}")
-                  Snackbar.make(binding.root, it.message ?: "Empty Error", Snackbar.LENGTH_LONG).show()
-              }
-          }
-        })
-
-        binding.lifecycleOwner = viewLifecycleOwner
         Timber.d("LoginFragment created..")
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        loginViewModel.loginEventHandler.observe(viewLifecycleOwner, {
+            when(it.status){
+                InformerStatus.SUCCESS -> {
+                    Timber.d("Login successful..")
+                    Snackbar.make(binding.root,  "login attempt is successful, navigating to dashboard(products)", Snackbar.LENGTH_LONG).show()
+
+                    // login attempt is successful, navigating to dashboard(products)
+
+                    val extras = FragmentNavigatorExtras(
+                        binding.animation to resources.getString(R.string.image_transition)
+                    )
+
+                    val direction =  LoginFragmentDirections.actionLoginFragmentToProductListFragment(
+                        resources.getString(R.string.product_title))
+
+                    NavHostFragment.findNavController(this).navigate(
+                        direction.actionId,
+                        direction.arguments,
+                        NavOptions.Builder().setPopUpTo(R.id.loginFragment, true).build(),
+                        extras
+                    )
+                }
+                InformerStatus.ERROR -> {
+                    Timber.d("Login failed.. ${it.message ?: "Empty Error"}")
+                    Snackbar.make(binding.root, it.message ?: "Empty Error", Snackbar.LENGTH_LONG).show()
+                }
+            }
+        })
+
     }
 
 }

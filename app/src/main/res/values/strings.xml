@@ -3,7 +3,7 @@
 
     <!-- Lottie files -->
     <string name="lottie_owl_coin_shower">owl_coin_shower.json</string>
-
+ 
     <!-- Splash Fragment -->
     <string name="image_transition">ImageTransition</string>
     <string name="logo_transition">LogoTransition</string>
@@ -23,6 +23,17 @@
 
     <!-- Product Fragment -->
     <string name="product_title">Products</string>
+    <string name="no_data">There is not any product</string>
+    <string name="err">Connection problem occurred. Please try again later.</string>
+    <string name="accessibility_information_nodata">Product listing no data image</string>
+    <string name="accessibility_information_err">Product listing network error image</string>
+    <string name="accessibility_row_image">Product Image</string>
+
+    <string name="welcome">Welcome Back!! %1$s, Do not waste your time and money. Moneybox offers always the best !!  </string>
+    <string name="welcome_alt">Welcome, Do not waste your time and money. Moneybox offers always the best !!  </string>
+    <string name="total_plan_value">Total Plan Value: £%1$s</string>
+    <string name="plan_value">Plan Value: £%1$s</string>
+    <string name="moneybox">Money Box: £%1$s</string>
 
     <!-- Product Detail Fragment -->
     <string name="product_detail_title">Product Details</string>

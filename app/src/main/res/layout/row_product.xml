@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="data"
+            type="com.akinci.moneybox.feaure.product.list.data.output.ProductResponse"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/product_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:cardBackgroundColor="@color/rowBg"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="5dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/product_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_toStartOf="@+id/product_image"
+                        android:layout_alignParentTop="true"
+                        android:singleLine="true"
+                        android:text="@{data.product.friendlyName}"/>
+
+                    <TextView
+                        android:id="@+id/plan_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/product_title"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_toStartOf="@+id/product_image"
+                        android:singleLine="true"
+                        android:text="@{@string/plan_value(Double.toString(data.planValue))}"/>
+
+                    <TextView
+                        android:id="@+id/money_box_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/plan_value"
+                        android:layout_margin="10dp"
+                        android:layout_toStartOf="@+id/product_image"
+                        android:singleLine="true"
+                        android:text="@{@string/moneybox(Double.toString(data.moneybox))}"/>
+
+                    <ImageView
+                        android:id="@+id/product_image"
+                        android:layout_width="100dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="10dp"
+                        android:contentDescription="@string/accessibility_row_image"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/arrow"
+                        android:visibility="gone"
+                        tools:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/arrow"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/ic_arrow_right"
+                        android:backgroundTint="@color/gray"
+                        android:backgroundTintMode="src_in"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:contentDescription="@string/accessibility_row_image"/>
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</layout>

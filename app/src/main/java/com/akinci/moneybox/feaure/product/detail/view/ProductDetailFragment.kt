@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class ProductDetailFragment : Fragment() {
 
     lateinit var binding: FragmentProductDetailBinding
-    private val productViewModel : ProductViewModel by activityViewModels() // activity scoped shared viewModel
+ //   private val productViewModel : ProductViewModel by activityViewModels() // activity scoped shared viewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,7 +24,8 @@ class ProductDetailFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_detail, container, false)
-        binding.vm = productViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+   //     binding.vm = productViewModel
 
         return binding.root
     }
