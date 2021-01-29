@@ -1,6 +1,7 @@
 package com.akinci.moneybox.feaure.product.detail.di
 
 import com.akinci.moneybox.common.network.NetworkChecker
+import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
 import com.akinci.moneybox.feaure.product.detail.data.api.PaymentServiceDao
 import com.akinci.moneybox.feaure.product.detail.repository.PaymentRepository
 import com.akinci.moneybox.feaure.product.detail.repository.PaymentRepositoryImpl
@@ -30,7 +31,8 @@ object PaymentModule {
     @Singleton
     fun providePaymentRepository(
             @Named("PaymentServiceDao") paymentServiceDao: PaymentServiceDao,
-            networkChecker: NetworkChecker
-    ): PaymentRepository = PaymentRepositoryImpl(paymentServiceDao, networkChecker)
+            networkChecker: NetworkChecker,
+            restErrorHandler : ErrorHandler
+    ): PaymentRepository = PaymentRepositoryImpl(paymentServiceDao, networkChecker, restErrorHandler)
 
 }

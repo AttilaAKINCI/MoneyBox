@@ -7,6 +7,8 @@ import com.akinci.moneybox.BuildConfig
 import com.akinci.moneybox.RootActivity
 import com.akinci.moneybox.common.network.NetworkChecker
 import com.akinci.moneybox.common.network.RestConfig
+import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
+import com.akinci.moneybox.common.network.errorhandler.ErrorHandlerImpl
 import com.akinci.moneybox.common.storage.IntentParams
 import com.akinci.moneybox.common.storage.LocalPreferences
 import com.akinci.moneybox.common.storage.PrefConfig
@@ -41,6 +43,13 @@ object AppModule {
     @Provides
     @Singleton
     fun provideNetworkChecker(@ApplicationContext context: Context) = NetworkChecker(context)
+
+    @Provides
+    @Singleton
+    fun provideRetrofitErrorBodyHandler(
+        retrofit: Retrofit
+    ) : ErrorHandler = ErrorHandlerImpl(retrofit)
+
     /** END **/
 
     /** Shared Preferences Integration

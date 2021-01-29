@@ -1,6 +1,7 @@
 package com.akinci.moneybox.feaure.product.list.di
 
 import com.akinci.moneybox.common.network.NetworkChecker
+import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
 import com.akinci.moneybox.feaure.product.list.data.api.ProductListServiceDao
 import com.akinci.moneybox.feaure.product.list.repository.ProductListRepository
 import com.akinci.moneybox.feaure.product.list.repository.ProductListRepositoryImpl
@@ -30,7 +31,8 @@ object ProductListModule {
     @Singleton
     fun provideProductListRepository(
             @Named("ProductListServiceDao") productListServiceDao: ProductListServiceDao,
-            networkChecker: NetworkChecker
-    ): ProductListRepository = ProductListRepositoryImpl(productListServiceDao, networkChecker)
+            networkChecker: NetworkChecker,
+            restErrorHandler : ErrorHandler
+    ): ProductListRepository = ProductListRepositoryImpl(productListServiceDao, networkChecker, restErrorHandler)
 
 }

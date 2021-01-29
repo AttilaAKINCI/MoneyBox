@@ -1,6 +1,7 @@
 package com.akinci.moneybox.feaure.login.di
 
 import com.akinci.moneybox.common.network.NetworkChecker
+import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
 import com.akinci.moneybox.feaure.login.data.api.LoginServiceDao
 import com.akinci.moneybox.feaure.login.repository.LoginRepository
 import com.akinci.moneybox.feaure.login.repository.LoginRepositoryImpl
@@ -30,8 +31,9 @@ object LoginModule {
     @Singleton
     fun provideLoginRepository(
             @Named("LoginServiceDao") loginServiceDao: LoginServiceDao,
-            networkChecker: NetworkChecker
-    ): LoginRepository = LoginRepositoryImpl(loginServiceDao, networkChecker)
+            networkChecker: NetworkChecker,
+            restErrorHandler: ErrorHandler
+    ): LoginRepository = LoginRepositoryImpl(loginServiceDao, networkChecker, restErrorHandler)
 
 
 }
