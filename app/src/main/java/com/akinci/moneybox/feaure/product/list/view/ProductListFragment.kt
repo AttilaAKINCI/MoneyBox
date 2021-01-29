@@ -1,25 +1,25 @@
 package com.akinci.moneybox.feaure.product.list.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.transition.Fade
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionSet
 import com.akinci.moneybox.R
+import com.akinci.moneybox.common.component.SnackBar
 import com.akinci.moneybox.common.component.adapter.ShimmerAdapter
 import com.akinci.moneybox.common.helper.InformerStatus
 import com.akinci.moneybox.databinding.FragmentProductListBinding
 import com.akinci.moneybox.feaure.product.list.component.adapter.ProductListAdapter
 import com.akinci.moneybox.feaure.product.viewmodel.ProductViewModel
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -97,7 +97,7 @@ class ProductListFragment : Fragment() {
                     productListAdapter.submitList(it.data)
                 }
                 InformerStatus.ERROR -> {
-                    Snackbar.make(binding.root, it.message!!, Snackbar.LENGTH_LONG).show()
+                    SnackBar.makeLarge(binding.root, it.message!!, SnackBar.LENGTH_LONG).show()
 
                     // on errors.
                     binding.informationContainer.visibility = View.VISIBLE

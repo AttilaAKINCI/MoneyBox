@@ -1,19 +1,15 @@
 package com.akinci.moneybox
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import com.airbnb.lottie.LottieAnimationView
+import com.akinci.moneybox.common.component.SnackBar
 import com.akinci.moneybox.common.storage.IntentParams
 import com.akinci.moneybox.databinding.ActivityRootBinding
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,11 +38,9 @@ class RootActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
 
         // direct login case for 401 unAuthorized service calls
-        // start from splash or login fragment ???
-        // TODO - decide :)
         val isDirectLogin = intent.getBooleanExtra(IntentParams.DIRECT_LOGIN, false)
         if(isDirectLogin){
-            Snackbar.make(binding.root, "Your login session is expired. Please login again.", Snackbar.LENGTH_LONG).show()
+            SnackBar.make(binding.root, "Your login session is expired. Please login again.", SnackBar.LENGTH_LONG).show()
         }
 
     }
