@@ -37,8 +37,6 @@ class ProductListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        // show appbar on splash screen
-        (activity as AppCompatActivity).supportActionBar?.show()
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_list, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -77,6 +75,8 @@ class ProductListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // show appbar on splash screen
+        (activity as AppCompatActivity).supportActionBar?.show()
 
         productViewModel.productList.observe(viewLifecycleOwner, {
             when(it.status){

@@ -14,6 +14,7 @@ import com.akinci.moneybox.common.network.errorhandler.ErrorHandlerImpl
 import com.akinci.moneybox.common.storage.IntentParams
 import com.akinci.moneybox.common.storage.LocalPreferences
 import com.akinci.moneybox.common.storage.PrefConfig
+import com.akinci.moneybox.common.storage.Preferences
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -61,7 +62,7 @@ object AppModule {
      * **/
     @Provides
     @Singleton
-    fun provideLocalPreferences(@ApplicationContext context: Context) = LocalPreferences(context)
+    fun provideLocalPreferences(@ApplicationContext context: Context) : Preferences = LocalPreferences(context)
     /** END **/
 
     /** File Downloader Integration
@@ -93,7 +94,7 @@ object AppModule {
     @Named("RestHttpClient")
     fun provideRestOkHttpClient(
             @ApplicationContext context: Context,
-            sharedPreferences: LocalPreferences
+            sharedPreferences: Preferences
     ) : OkHttpClient {
         val builder = OkHttpClient.Builder()
 

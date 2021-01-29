@@ -6,14 +6,14 @@ import javax.inject.Inject
 
 class LocalPreferences @Inject constructor(
     val context : Context
-){
+) : Preferences {
     private val prefTag  = context.packageName + "_preferences"
     private val prefs = context.getSharedPreferences(prefTag, MODE_PRIVATE)
 
-    fun getStoredTag(key: String): String {
-        return prefs.getString(key, "")!!
+    override fun getStoredTag(key: String): String? {
+        return prefs.getString(key, "")
     }
-    fun setStoredTag(key: String, value: String) {
+    override fun setStoredTag(key: String, value: String) {
         prefs.edit().putString(key, value).apply()
     }
 }

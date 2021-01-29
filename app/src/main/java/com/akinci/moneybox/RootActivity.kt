@@ -43,5 +43,6 @@ class RootActivity : AppCompatActivity() {
             SnackBar.make(binding.root, "Your login session is expired. Please login again.", SnackBar.LENGTH_LONG).show()
         }
 
+
     }
 }

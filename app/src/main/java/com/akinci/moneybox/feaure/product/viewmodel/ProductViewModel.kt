@@ -1,6 +1,5 @@
 package com.akinci.moneybox.feaure.product.viewmodel
 
-import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,13 +10,13 @@ import com.akinci.moneybox.common.component.filedownloader.FileDownloader
 import com.akinci.moneybox.common.helper.Event
 import com.akinci.moneybox.common.helper.Informer
 import com.akinci.moneybox.common.helper.ResourceStatus
-import com.akinci.moneybox.common.storage.LocalPreferences
 import com.akinci.moneybox.common.storage.PrefConfig
+import com.akinci.moneybox.common.storage.Preferences
 import com.akinci.moneybox.feaure.product.detail.data.input.PaymentServiceRequest
-import com.akinci.moneybox.feaure.product.list.repository.ProductListRepository
 import com.akinci.moneybox.feaure.product.detail.repository.PaymentRepository
 import com.akinci.moneybox.feaure.product.list.data.output.ProductListServiceResponse
 import com.akinci.moneybox.feaure.product.list.data.output.ProductResponse
+import com.akinci.moneybox.feaure.product.list.repository.ProductListRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -26,7 +25,7 @@ import timber.log.Timber
 class ProductViewModel @ViewModelInject constructor(
         private val productListRepository: ProductListRepository,
         private val paymentRepository: PaymentRepository,
-        private val sharedPreferences: LocalPreferences,
+        private val sharedPreferences: Preferences,
         private val fileDownloader: FileDownloader
 ) : ViewModel() {
 

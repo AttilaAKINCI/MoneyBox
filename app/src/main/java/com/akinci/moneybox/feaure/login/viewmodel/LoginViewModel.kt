@@ -11,6 +11,7 @@ import com.akinci.moneybox.common.helper.Informer
 import com.akinci.moneybox.common.helper.ResourceStatus
 import com.akinci.moneybox.common.storage.LocalPreferences
 import com.akinci.moneybox.common.storage.PrefConfig
+import com.akinci.moneybox.common.storage.Preferences
 import com.akinci.moneybox.feaure.login.data.input.LoginServiceRequest
 import com.akinci.moneybox.feaure.login.repository.LoginRepository
 import kotlinx.coroutines.launch
@@ -18,7 +19,7 @@ import timber.log.Timber
 
 class LoginViewModel @ViewModelInject constructor(
         private val loginRepository: LoginRepository,
-        private val sharedPreferences: LocalPreferences
+        private val sharedPreferences: Preferences
 ) : ViewModel() {
 
     private val _loginEventHandler = MutableLiveData<Informer<Boolean>>()
@@ -29,9 +30,9 @@ class LoginViewModel @ViewModelInject constructor(
     var password = MutableLiveData<String>("P455word12")
     var name = MutableLiveData<String>("Jaeren")
 
-//    var email = MutableLiveData<String>()
-//    var password = MutableLiveData<String>()
-//    var name = MutableLiveData<String>()
+//    var email = MutableLiveData<String>("")
+//    var password = MutableLiveData<String>("")
+//    var name = MutableLiveData<String>("")
 
     init {
         Timber.d("LoginViewModel created..")
@@ -43,38 +44,41 @@ class LoginViewModel @ViewModelInject constructor(
         if(TextUtils.isEmpty(password.value)){ password.value = ""}
     }
 
-    fun login() = viewModelScope.launch {
+    fun login() {
+        if(email.value!!.isEmpty() || password.value!!.isEmpty() ){
+            _loginEventHandler.postValue(Informer.error("email or password should not be empty", null))
+            return
+        }
+
         val request = LoginServiceRequest(
             email.value!!,
             password.value!!,
             "ANYTHING"
         )
 
-        val response = loginRepository.login(request)
-        when(response.resourceStatus){
-            ResourceStatus.SUCCESS -> {
-                response.data?.let {
-                    // login completed successfully
+        viewModelScope.launch {
+            val response = loginRepository.login(request)
+            when(response.resourceStatus){
+                ResourceStatus.SUCCESS -> {
+                    response.data?.let {
+                        // login completed successfully
 
-                    // store users name and bearer token
-                    sharedPreferences.setStoredTag(PrefConfig.AUTH_TOKEN, it.Session.BearerToken)
-                    name.value?.let { username ->
-                        sharedPreferences.setStoredTag(PrefConfig.USERNAME, username)
-                    }
+                        // store users name and bearer token
+                        sharedPreferences.setStoredTag(PrefConfig.AUTH_TOKEN, it.Session.BearerToken)
+                        name.value?.let { username ->
+                            sharedPreferences.setStoredTag(PrefConfig.USERNAME, username)
+                        }
 
-                    // tell fragment to everything is ok and we can proceed to
-                    // dashboard(products)
-                    _loginEventHandler.postValue(Informer.success(true))
-                } ?: _loginEventHandler.postValue(Informer.error("Response data is empty", null))
-            }
-            ResourceStatus.ERROR -> {
-                // pass error message to fragment
-                _loginEventHandler.postValue(Informer.error(response.message ?: "", null))
+                        // tell fragment to everything is ok and we can proceed to
+                        // dashboard(products)
+                        _loginEventHandler.postValue(Informer.success(true))
+                    } ?: _loginEventHandler.postValue(Informer.error("Response data is empty", null))
+                }
+                ResourceStatus.ERROR -> {
+                    // pass error message to fragment
+                    _loginEventHandler.postValue(Informer.error(response.message ?: "", null))
+                }
             }
         }
-
-
     }
-
-
 }

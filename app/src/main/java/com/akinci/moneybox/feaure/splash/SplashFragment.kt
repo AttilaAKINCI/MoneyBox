@@ -28,8 +28,6 @@ class SplashFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //hide appbar on splash screen
-        (activity as AppCompatActivity).supportActionBar?.hide()
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_splash, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -43,6 +41,13 @@ class SplashFragment : Fragment() {
 
         Timber.d("SplashFragment created..")
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //hide appbar on splash screen
+        (activity as AppCompatActivity).supportActionBar?.hide()
     }
 
     override fun onStart() {
