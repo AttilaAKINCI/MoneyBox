@@ -1,10 +1,13 @@
 package com.akinci.moneybox.feaure.product.viewmodel
 
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.akinci.moneybox.common.component.filedownloader.FileDownloadEventListener
+import com.akinci.moneybox.common.component.filedownloader.FileDownloader
 import com.akinci.moneybox.common.helper.Event
 import com.akinci.moneybox.common.helper.Informer
 import com.akinci.moneybox.common.helper.ResourceStatus
@@ -15,6 +18,7 @@ import com.akinci.moneybox.feaure.product.list.repository.ProductListRepository
 import com.akinci.moneybox.feaure.product.detail.repository.PaymentRepository
 import com.akinci.moneybox.feaure.product.list.data.output.ProductListServiceResponse
 import com.akinci.moneybox.feaure.product.list.data.output.ProductResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -22,7 +26,8 @@ import timber.log.Timber
 class ProductViewModel @ViewModelInject constructor(
         private val productListRepository: ProductListRepository,
         private val paymentRepository: PaymentRepository,
-        private val sharedPreferences: LocalPreferences
+        private val sharedPreferences: LocalPreferences,
+        private val fileDownloader: FileDownloader
 ) : ViewModel() {
 
     // product list service response
@@ -43,6 +48,9 @@ class ProductViewModel @ViewModelInject constructor(
     // paymentEventHandler sends event feedback to UI layer(Fragment)
     private val _paymentEventHandler = MutableLiveData<Event<Informer<Int>>>()
     val paymentEventHandler : LiveData<Event<Informer<Int>>> = _paymentEventHandler
+
+    private val _documentDownloadEventHandler = MutableLiveData<Event<Informer<Any>>>()
+    val documentDownloadEventHandler : LiveData<Event<Informer<Any>>> = _documentDownloadEventHandler
 
     // selectedProduct is bind to product detail fragment xml
     private var _selectedProduct = MutableLiveData<ProductResponse>()
@@ -121,10 +129,17 @@ class ProductViewModel @ViewModelInject constructor(
     }
 
     fun downloadDocument(){
-        val downloadDocumentUrl = _selectedProduct.value?.Product?.Documents?.KeyFeaturesUrl
+            _selectedProduct.value?.Product?.Documents?.KeyFeaturesUrl?.let {
+            // start download processes
+            viewModelScope.launch(Dispatchers.IO) {
 
-        // start download processes
-
+                fileDownloader.download(it, object : FileDownloadEventListener {
+                    override fun onEnqueued() {
+                        _documentDownloadEventHandler.postValue(Event(Informer.info("Document is enqueued...")))
+                    }
+                })
+            }
+        }
 
     }
 

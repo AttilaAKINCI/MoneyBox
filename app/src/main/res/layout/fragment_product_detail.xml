@@ -98,7 +98,6 @@
                 android:layout_centerHorizontal="true"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:onClick="@{() -> vm.downloadDocument()}"
                 android:visibility="@{TextUtils.isEmpty(vm.selectedProduct.Product.Documents.keyFeaturesUrl) ? View.GONE : View.VISIBLE}"
                 android:text="@string/action_download_document" />
 

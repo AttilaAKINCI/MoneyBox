@@ -4,6 +4,7 @@ package com.akinci.moneybox.common.helper
 enum class InformerStatus {
     SUCCESS,
     ERROR,
+    INFO,
     LOADING,
     NO_DATA
 }
@@ -17,6 +18,12 @@ data class Informer<out T>(val status: InformerStatus, val data: T?, val message
                 data = data,
                 message = null
             )
+        fun <T> info(message: String, data: T? = null): Informer<T> =
+                Informer(
+                        status = InformerStatus.INFO,
+                        data = data,
+                        message = message
+                )
         fun <T> error(message: String, data: T? = null): Informer<T> =
             Informer(
                 status = InformerStatus.ERROR,

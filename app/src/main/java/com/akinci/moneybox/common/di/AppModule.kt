@@ -5,6 +5,8 @@ import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
 import com.akinci.moneybox.BuildConfig
 import com.akinci.moneybox.RootActivity
+import com.akinci.moneybox.common.component.filedownloader.FileDownloader
+import com.akinci.moneybox.common.component.filedownloader.FileDownloaderImpl
 import com.akinci.moneybox.common.network.NetworkChecker
 import com.akinci.moneybox.common.network.RestConfig
 import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
@@ -18,7 +20,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import okhttp3.*
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -60,6 +64,16 @@ object AppModule {
     fun provideLocalPreferences(@ApplicationContext context: Context) = LocalPreferences(context)
     /** END **/
 
+    /** File Downloader Integration
+     * START
+     * **/
+    @Provides
+    @Singleton
+    fun provideFileDownloader(
+            @ApplicationContext context: Context
+    ) : FileDownloader = FileDownloaderImpl(context)
+    /** END **/
+
     /** Retrofit HILT Integrations
      * START
      * **/
@@ -77,7 +91,7 @@ object AppModule {
     @Provides
     @Singleton
     @Named("RestHttpClient")
-    fun provideOkHttpClient(
+    fun provideRestOkHttpClient(
             @ApplicationContext context: Context,
             sharedPreferences: LocalPreferences
     ) : OkHttpClient {
