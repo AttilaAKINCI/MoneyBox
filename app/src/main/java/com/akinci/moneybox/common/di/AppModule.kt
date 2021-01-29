@@ -76,18 +76,23 @@ object AppModule {
 
     @Provides
     @Singleton
+    @Named("RestHttpClient")
     fun provideOkHttpClient(
             @ApplicationContext context: Context,
             sharedPreferences: LocalPreferences
-    ) : OkHttpClient =
+    ) : OkHttpClient {
+        val builder = OkHttpClient.Builder()
+
         if (BuildConfig.DEBUG) {
             // debug logging activated
             val logger = HttpLoggingInterceptor()
             logger.level = HttpLoggingInterceptor.Level.BODY
 
-            OkHttpClient.Builder()
-                .addInterceptor(logger)
-                .addInterceptor(object : Interceptor {
+            //add logging interceptor
+            builder.addInterceptor(logger)
+        }
+
+        return builder.addInterceptor(object : Interceptor {
                     override fun intercept(chain: Interceptor.Chain): Response {
                         val bearerToken = sharedPreferences.getStoredTag(PrefConfig.AUTH_TOKEN)
 
@@ -117,18 +122,12 @@ object AppModule {
                 .readTimeout(100, TimeUnit.SECONDS)
                 .connectTimeout(100, TimeUnit.SECONDS)
                 .build()
-        } else {
-            // debug logging activated
-            OkHttpClient.Builder()
-                .readTimeout(100, TimeUnit.SECONDS)
-                .connectTimeout(100, TimeUnit.SECONDS)
-                .build()
-        }
+    }
 
     @Provides
     @Singleton
     fun provideRetrofit(
-            okHttpClient: OkHttpClient,
+            @Named("RestHttpClient") okHttpClient: OkHttpClient,
             @Named("BaseURL") baseURL: String,
             converter: MoshiConverterFactory
     ) : Retrofit = Retrofit.Builder()
