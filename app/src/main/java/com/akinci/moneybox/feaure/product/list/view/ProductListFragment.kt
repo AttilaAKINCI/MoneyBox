@@ -78,6 +78,9 @@ class ProductListFragment : Fragment() {
         // show appbar on splash screen
         (activity as AppCompatActivity).supportActionBar?.show()
 
+        // fetch products
+        productViewModel.fetchProductList()
+
         productViewModel.productList.observe(viewLifecycleOwner, {
             when(it.status){
                 InformerStatus.LOADING -> {

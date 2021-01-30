@@ -5,6 +5,7 @@ import com.akinci.moneybox.common.network.NetworkChecker
 import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
 import com.akinci.moneybox.feaure.product.list.data.api.ProductListServiceDao
 import com.akinci.moneybox.feaure.product.list.data.output.ProductListServiceResponse
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -22,6 +23,9 @@ class ProductListRepositoryImpl @Inject constructor(
                 if(response.isSuccessful){
                     /** 200 -> 299 Error status range **/
                     response.body()?.let {
+
+                        delay(1000) // simulate more network delay.
+
                         return@let Resource.success(it)
                     } ?: Resource.error("Product list service response body is null",null)
                 }else{

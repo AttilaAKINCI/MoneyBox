@@ -70,6 +70,9 @@ class ProductDetailFragment : Fragment() {
                 when(it.status){
                     InformerStatus.INFO -> {
                         SnackBar.make(binding.root, it.message!!, SnackBar.LENGTH_LONG).show()
+                    }
+                    InformerStatus.ERROR -> {
+                        SnackBar.make(binding.root, it.message!!, SnackBar.LENGTH_LONG).show()
                     }else->{ /** NO ACTION **/ }
                 }
             }
@@ -113,7 +116,7 @@ class ProductDetailFragment : Fragment() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if(requestCode == WRITE_PERMISSION_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            // permission granted so we can load document
+            // permission granted so I can load document
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q) {
                 productViewModel.downloadDocument()
             }

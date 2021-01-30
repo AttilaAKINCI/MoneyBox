@@ -69,7 +69,7 @@ class LoginViewModel @ViewModelInject constructor(
                             sharedPreferences.setStoredTag(PrefConfig.USERNAME, username)
                         }
 
-                        // tell fragment to everything is ok and we can proceed to
+                        // tell fragment to everything is ok and I can proceed to
                         // dashboard(products)
                         _loginEventHandler.postValue(Informer.success(true))
                     } ?: _loginEventHandler.postValue(Informer.error("Response data is empty", null))

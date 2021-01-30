@@ -7,6 +7,7 @@ import android.content.Context.DOWNLOAD_SERVICE
 import android.net.Uri
 import android.os.Environment
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.lang.Exception
 import javax.inject.Inject
 
 class FileDownloaderImpl @Inject constructor(
@@ -14,25 +15,27 @@ class FileDownloaderImpl @Inject constructor(
 ) : FileDownloader {
 
     override suspend fun download(downloadUrl : String, fileDownloadListener : FileDownloadEventListener) {
+        try{
+            val downloadManager = context.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
+            val request = DownloadManager.Request(Uri.parse(downloadUrl))
+            request.setAllowedNetworkTypes(NETWORK_WIFI or NETWORK_MOBILE)
+            request.setNotificationVisibility(VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            request.setVisibleInDownloadsUi(true)
+            request.setAllowedOverMetered(true)
+            request.setAllowedOverRoaming(false)
+            request.setTitle("document")
+            request.setDescription("moneybox document")
 
-        val downloadManager = context.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        val request = DownloadManager.Request(Uri.parse(downloadUrl))
-        request.setAllowedNetworkTypes(NETWORK_WIFI or NETWORK_MOBILE)
-        request.setNotificationVisibility(VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        request.setVisibleInDownloadsUi(true)
-        request.setAllowedOverMetered(true)
-        request.setAllowedOverRoaming(false)
-        request.setTitle("document")
-        request.setDescription("moneybox document")
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                request.setDestinationInExternalFilesDir(context, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath, "document.pdf")
+            }else{
+                request.setDestinationInExternalPublicDir(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,"document.pdf")
+            }
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            request.setDestinationInExternalFilesDir(context, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath, "document.pdf")
-        }else{
-            request.setDestinationInExternalPublicDir(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,"document.pdf")
+            downloadManager.enqueue(request)
+            fileDownloadListener.onEnqueued()
+        }catch (exception : Exception){
+            fileDownloadListener.onError(exception.message!!)
         }
-
-        downloadManager.enqueue(request)
-        fileDownloadListener.onEnqueued()
     }
-
 }

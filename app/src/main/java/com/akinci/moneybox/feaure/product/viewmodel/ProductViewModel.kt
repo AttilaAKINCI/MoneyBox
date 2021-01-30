@@ -18,7 +18,6 @@ import com.akinci.moneybox.feaure.product.list.data.output.ProductListServiceRes
 import com.akinci.moneybox.feaure.product.list.data.output.ProductResponse
 import com.akinci.moneybox.feaure.product.list.repository.ProductListRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -63,9 +62,6 @@ class ProductViewModel @ViewModelInject constructor(
 
         // fetch userName from shared preferences.
         _userName.value = sharedPreferences.getStoredTag(PrefConfig.USERNAME)
-
-        // fetch products
-        getProductList()
     }
 
     fun clearSelectedProduct(){ _selectedProduct.value = null }
@@ -73,11 +69,9 @@ class ProductViewModel @ViewModelInject constructor(
         _selectedProduct.value = _productServiceResponse.value?.ProductResponses?.find { it.Id == selectedProductId }
     }
 
-    private fun getProductList() = viewModelScope.launch {
+    fun fetchProductList() = viewModelScope.launch {
         // send loading action for initial load
         _productList.postValue(Informer.loading())
-
-        delay(1000) // simulate network delay.
 
         val response = productListRepository.getProductList()
         when(response.resourceStatus){
@@ -135,6 +129,9 @@ class ProductViewModel @ViewModelInject constructor(
                 fileDownloader.download(it, object : FileDownloadEventListener {
                     override fun onEnqueued() {
                         _documentDownloadEventHandler.postValue(Event(Informer.info("Document is enqueued...")))
+                    }
+                    override fun onError(message: String) {
+                        _documentDownloadEventHandler.postValue(Event(Informer.error("Document is enqueued...")))
                     }
                 })
             }
