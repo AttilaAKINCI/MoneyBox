@@ -6,10 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.fragment.NavHostFragment
 import com.akinci.moneybox.common.helper.Informer
 import com.akinci.moneybox.common.helper.ResourceStatus
-import com.akinci.moneybox.common.storage.LocalPreferences
 import com.akinci.moneybox.common.storage.PrefConfig
 import com.akinci.moneybox.common.storage.Preferences
 import com.akinci.moneybox.feaure.login.data.input.LoginServiceRequest
