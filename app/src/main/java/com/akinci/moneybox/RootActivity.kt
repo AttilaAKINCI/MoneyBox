@@ -18,6 +18,8 @@ class RootActivity : AppCompatActivity() {
     private lateinit var navigationController: NavController
     private lateinit var binding : ActivityRootBinding
 
+    var isDirectLogin = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_root)
@@ -38,11 +40,7 @@ class RootActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
 
         // direct login case for 401 unAuthorized service calls
-        val isDirectLogin = intent.getBooleanExtra(IntentParams.DIRECT_LOGIN, false)
-        if(isDirectLogin){
-            SnackBar.make(binding.root, "Your login session is expired. Please login again.", SnackBar.LENGTH_LONG).show()
-        }
-
+        isDirectLogin = intent.getBooleanExtra(IntentParams.DIRECT_LOGIN, false)
 
     }
 }

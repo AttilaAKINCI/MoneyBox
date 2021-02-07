@@ -14,6 +14,7 @@ import androidx.transition.Fade
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionSet
 import com.akinci.moneybox.R
+import com.akinci.moneybox.RootActivity
 import com.akinci.moneybox.common.component.SnackBar
 import com.akinci.moneybox.common.extension.isValid
 import com.akinci.moneybox.common.helper.InformerStatus
@@ -70,12 +71,19 @@ class LoginFragment : Fragment() {
             }
         }
 
+
         Timber.d("LoginFragment created..")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if(activity is RootActivity){
+            if((activity as RootActivity).isDirectLogin){
+                SnackBar.make(binding.root, "Your login session is expired. Please login again.", SnackBar.LENGTH_LONG).show()
+            }
+        }
 
         loginViewModel.loginEventHandler.observe(viewLifecycleOwner, {
             when(it.status){
