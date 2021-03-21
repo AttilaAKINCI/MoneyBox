@@ -7,10 +7,4 @@ data class ApiErrorResponse(
     val Message: String,
     val Name: String,
     val ValidationErrors: List<Any>
-) {
-    constructor() : this(
-            "Empty error body",
-            "",
-            listOf<Any>()
-    )
-}
+)

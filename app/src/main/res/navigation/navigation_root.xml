@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.akinci.moneybox.feaure.splash.SplashFragment"
+        android:name="com.akinci.moneybox.feature.splash.SplashFragment"
         android:label="SplashFragment" >
         <action
             android:id="@+id/action_splashFragment_to_loginFragment"
@@ -14,7 +14,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.akinci.moneybox.feaure.login.view.LoginFragment"
+        android:name="com.akinci.moneybox.feature.login.view.LoginFragment"
         android:label="@string/login_title" >
         <action
             android:id="@+id/action_loginFragment_to_productListFragment"
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/productListFragment"
-        android:name="com.akinci.moneybox.feaure.product.list.view.ProductListFragment"
+        android:name="com.akinci.moneybox.feature.product.list.view.ProductListFragment"
         android:label="{titleList}" >
         <action
             android:id="@+id/action_productListFragment_to_productDetailFragment"
@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/productDetailFragment"
-        android:name="com.akinci.moneybox.feaure.product.detail.view.ProductDetailFragment"
+        android:name="com.akinci.moneybox.feature.product.detail.view.ProductDetailFragment"
         android:label="{titleDetail}" >
         <argument
             android:name="productId"

@@ -1,11 +1,11 @@
 package com.akinci.moneybox
 
-import org.junit.Test
-import org.junit.Assert.*
+import org.junit.Assert
+import org.junit.jupiter.api.Test
 
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        Assert.assertEquals(4, 2 + 2)
     }
 }

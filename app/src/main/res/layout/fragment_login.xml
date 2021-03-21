@@ -6,7 +6,7 @@
     <data>
         <variable
             name="vm"
-            type="com.akinci.moneybox.feaure.login.viewmodel.LoginViewModel"/>
+            type="com.akinci.moneybox.feature.login.viewmodel.LoginViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        tools:context=".RootActivity">
+        tools:context=".AppRootActivity">
 
         <ImageView
             android:id="@+id/img_logo"
@@ -49,7 +49,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="@={vm.email}"
-                notEmptyValid="@{vm.email}"/>
+                notEmptyValid="@{vm.emailValid}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -73,7 +73,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="@={vm.password}"
-                notEmptyValid="@{vm.password}"/>
+                notEmptyValid="@{vm.passwordValid}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

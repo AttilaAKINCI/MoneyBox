@@ -38,7 +38,6 @@
     <!-- Product Detail Fragment -->
     <string name="product_detail_title">Product Details</string>
     <string name="action_add_money">Add £%1$s</string>
-    <string name="add_money_info">Requested amount(£%1$s) has been added to your MoneyBox!!</string>
     <string name="action_download_document">Download Document</string>
 
 </resources>

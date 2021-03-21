@@ -3,24 +3,24 @@ package com.akinci.moneybox.common.di
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
+import com.akinci.moneybox.AppRootActivity
 import com.akinci.moneybox.BuildConfig
-import com.akinci.moneybox.RootActivity
-import com.akinci.moneybox.common.component.filedownloader.FileDownloader
-import com.akinci.moneybox.common.component.filedownloader.FileDownloaderImpl
+import com.akinci.moneybox.common.component.FileDownloader
+import com.akinci.moneybox.common.coroutine.CoroutineContextProvider
 import com.akinci.moneybox.common.network.NetworkChecker
 import com.akinci.moneybox.common.network.RestConfig
 import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
 import com.akinci.moneybox.common.network.errorhandler.ErrorHandlerImpl
 import com.akinci.moneybox.common.storage.IntentParams
+import com.akinci.moneybox.common.storage.LocalPreferenceConfig
 import com.akinci.moneybox.common.storage.LocalPreferences
-import com.akinci.moneybox.common.storage.PrefConfig
 import com.akinci.moneybox.common.storage.Preferences
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -28,19 +28,21 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 
 @Module
-@InstallIn(ApplicationComponent::class) // live as long as hole application
+@InstallIn(SingletonComponent::class) // live as long as hole application
 object AppModule {
-    /**
-     * ApplicationComponent::class --> App Scoped
-     * ActivityComponent::class --> Activity Scoped
-     * FragmentComponent::class --> Fragment Scoped
-     * ViewComponent::Class --> View Scoped
+
+    /** Coroutine context provider
+     * START
      * **/
+    @Provides
+    @Singleton
+    fun provideCoroutineContext() = CoroutineContextProvider()
+    /** END **/
 
     /** Network Connection Checker Integration
      * START
@@ -70,16 +72,18 @@ object AppModule {
      * **/
     @Provides
     @Singleton
-    fun provideFileDownloader(
-            @ApplicationContext context: Context
-    ) : FileDownloader = FileDownloaderImpl(context)
+    fun provideFileDownloader(@ApplicationContext context: Context) = FileDownloader(context)
     /** END **/
 
     /** Retrofit HILT Integrations
      * START
      * **/
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class BaseURL
+
     @Provides
-    @Named("BaseURL")
+    @BaseURL
     fun provideBaseUrl() = RestConfig.API_SERVER_URL
 
     @Provides
@@ -89,9 +93,14 @@ object AppModule {
     @Provides
     fun providesMoshi() = Moshi.Builder().build()
 
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class RestHttpClient
+
     @Provides
     @Singleton
-    @Named("RestHttpClient")
+    @RestHttpClient
     fun provideRestOkHttpClient(
             @ApplicationContext context: Context,
             sharedPreferences: Preferences
@@ -109,7 +118,8 @@ object AppModule {
 
         return builder.addInterceptor(object : Interceptor {
                     override fun intercept(chain: Interceptor.Chain): Response {
-                        val bearerToken = sharedPreferences.getStoredTag(PrefConfig.AUTH_TOKEN)
+
+                        val bearerToken = sharedPreferences.getStoredTag(LocalPreferenceConfig.AUTH_TOKEN)
 
                         val newRequest = chain.request().newBuilder()
                                 .addHeader("AppId", BuildConfig.APP_ID)
@@ -124,7 +134,7 @@ object AppModule {
                         if(response.code == 401){
                             // bearer token expired..
                             // restart navigation graph.
-                            val intent = Intent(context, RootActivity::class.java)
+                            val intent = Intent(context, AppRootActivity::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             intent.putExtra(IntentParams.DIRECT_LOGIN, true)
@@ -142,8 +152,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideRetrofit(
-            @Named("RestHttpClient") okHttpClient: OkHttpClient,
-            @Named("BaseURL") baseURL: String,
+            @RestHttpClient okHttpClient: OkHttpClient,
+            @BaseURL baseURL: String,
             converter: MoshiConverterFactory
     ) : Retrofit = Retrofit.Builder()
         .baseUrl(baseURL)

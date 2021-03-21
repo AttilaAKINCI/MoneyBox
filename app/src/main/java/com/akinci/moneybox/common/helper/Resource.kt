@@ -1,25 +1,9 @@
 package com.akinci.moneybox.common.helper
 
-/** Keeps network request status during kotlin coroutine calls **/
-enum class ResourceStatus {
-    SUCCESS,
-    ERROR
-}
-
-/** Network request state identifier class **/
-data class Resource<out T>(val resourceStatus: ResourceStatus, val data: T?, val message: String?) {
-    companion object {
-        fun <T> success(data: T): Resource<T> =
-                Resource(
-                        resourceStatus = ResourceStatus.SUCCESS,
-                        data = data,
-                        message = null
-                )
-        fun <T> error( message: String, data: T? = null): Resource<T> =
-                Resource(
-                        resourceStatus = ResourceStatus.ERROR,
-                        data = data,
-                        message = message
-                )
-    }
+sealed class Resource<out T> {
+    data class Success<T>(val data: T?) : Resource<T>()
+    data class Error(val message: String) : Resource<Nothing>()
+    data class Loading(val message: String = "") : Resource<Nothing>()
+    data class NoData(val message: String = "") : Resource<Nothing>()
+    data class Info(val message: String) : Resource<Nothing>()
 }
