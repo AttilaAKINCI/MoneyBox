@@ -131,7 +131,7 @@ selection response.
 
 
 #### Wire Frame
-<img src="https://github.com/AttilaAKINCI/MoneyBox/blob/main/images/wireframe.png" width="200">
+<img src="https://github.com/AttilaAKINCI/MoneyBox/blob/main/images/wireframe.png" width="600">
 
 #### ScreenShots
 <img src="https://github.com/AttilaAKINCI/MoneyBox/blob/main/images/1.png" width="200">   <img
