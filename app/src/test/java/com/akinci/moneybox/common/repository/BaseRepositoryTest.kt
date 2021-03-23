@@ -2,9 +2,11 @@ package com.akinci.moneybox.common.repository
 
 import com.akinci.moneybox.common.helper.Resource
 import com.akinci.moneybox.common.network.NetworkChecker
+import com.akinci.moneybox.common.network.errorhandler.ApiErrorResponse
 import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
-import com.akinci.socialapitrial.common.helper.Resource
+import com.akinci.moneybox.jsonresponses.GetApiErrorResponse
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.Moshi
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,10 +27,11 @@ class BaseRepositoryTest {
     @MockK
     lateinit var errorHandler: ErrorHandler
 
-    private lateinit var repository : BaseRepositoryImpl
-
     @MockK
     lateinit var callBackObj : SuspendingCallBack
+
+    private lateinit var repository : BaseRepositoryImpl
+    private val moshi = Moshi.Builder().build()
 
     @BeforeEach
     fun setUp() {
@@ -41,24 +44,18 @@ class BaseRepositoryTest {
 
     class SuspendingCallBack {
         fun serviceActionCallBack() : Response<String> { return Response.success("Rest Call Succeeded") }
-        fun responseMappingActionCallBack(serviceResp : String) : Resource<Int> { return Resource.Success(200) }
     }
 
     /**
      *  BaseRepositoryImpl class holds base logic of repository layer.
-     *  in this class there are 2 functions that handles network request responses.
      *
-     *  1- (A-MODEL) callService with only retrofitServiceAction directly sends retrofit service response object
-     *
-     *  2- (B-MODEL) callService with retrofitServiceAction and customResponseMappingAction
-     *  transfers retrofit service response object to custom response mapper and returns mapped object
+     *  callService with only retrofitServiceAction directly sends retrofit service response object
      *
      *  Contents of callService functions is the same apart from success case.
-     *  In implementation both callService functions is tested in same test function
      * **/
 
     @Test
-    fun `MODEL A - Network is ok, callService function is called, returns Resource-Success for success`() = runBlockingTest {
+    fun `Network is ok, callService function is called, returns Resource-Success for success`() = runBlockingTest {
         every { networkChecker.isNetworkConnected() } returns true
         coEvery { callBackObj.serviceActionCallBack() } returns Response.success("Rest Call Succeeded")
 
@@ -75,33 +72,7 @@ class BaseRepositoryTest {
     }
 
     @Test
-    fun `MODEL B - Network is ok, callService function is called, returns Resource-Success for success`() = runBlockingTest {
-        every { networkChecker.isNetworkConnected() } returns true
-        coEvery { callBackObj.serviceActionCallBack() } returns Response.success("Rest Call Succeeded")
-        coEvery { callBackObj.responseMappingActionCallBack(any()) } returns Resource.Success(200)
-
-        val callServiceResponseObj = repository.callService(
-            retrofitServiceAction = { callBackObj.serviceActionCallBack() },
-            customResponseMappingAction = {
-                callBackObj.responseMappingActionCallBack(it)
-            }
-        )
-
-        /** repository function response type should be Resource.Success **/
-        assertThat(callServiceResponseObj).isInstanceOf(Resource.Success::class.java)
-        /** returned error should be network error message **/
-        assertThat((callServiceResponseObj as Resource.Success).data).isEqualTo(200)
-
-        /** call back should be fired. **/
-        coVerify (exactly = 1) {
-            callBackObj.serviceActionCallBack()
-            callBackObj.responseMappingActionCallBack(any())
-        }
-        confirmVerified(callBackObj)
-    }
-
-    @Test
-    fun `MODEL A - Network is ok, callService function is called, returns Resource-Error on null response`() = runBlockingTest {
+    fun `Network is ok, callService function is called, returns Resource-Error on null response`() = runBlockingTest {
         every { networkChecker.isNetworkConnected() } returns true
         coEvery { callBackObj.serviceActionCallBack() } returns Response.success(null)
 
@@ -118,34 +89,12 @@ class BaseRepositoryTest {
     }
 
     @Test
-    fun `MODEL B - Network is ok, callService function is called, returns Resource-Error on null response`() = runBlockingTest {
+    fun `Network is ok, callService function is called, returns Resource-Error on unsuccessful response code`() = runBlockingTest {
+        val error : Response<String> = Response.error(404, "{\"error\":[\"404 Not Found\"]}".toResponseBody("application/json".toMediaTypeOrNull()))
+
         every { networkChecker.isNetworkConnected() } returns true
-        coEvery { callBackObj.serviceActionCallBack() } returns Response.success(null)
-        coEvery { callBackObj.responseMappingActionCallBack(any()) } returns Resource.Success(200)
-
-        val callServiceResponseObj = repository.callService(
-            retrofitServiceAction = { callBackObj.serviceActionCallBack() },
-            customResponseMappingAction = {
-                callBackObj.responseMappingActionCallBack(it)
-            }
-        )
-
-        /** repository function response type should be Resource.Error **/
-        assertThat(callServiceResponseObj).isInstanceOf(Resource.Error::class.java)
-        /** returned error should be response body is null **/
-        assertThat((callServiceResponseObj as Resource.Error).message).isEqualTo("Service response body is null")
-
-        /** call back should be fired. **/
-        coVerify (exactly = 1) { callBackObj.serviceActionCallBack() }
-        coVerify (exactly = 0) { callBackObj.responseMappingActionCallBack(any()) }
-        confirmVerified(callBackObj)
-    }
-
-    @Test
-    fun `MODEL A - Network is ok, callService function is called, returns Resource-Error on unsuccessful response code`() = runBlockingTest {
-        every { networkChecker.isNetworkConnected() } returns true
-        coEvery { callBackObj.serviceActionCallBack() } returns Response.error(404, "{\"error\":[\"404 Not Found\"]}"
-            .toResponseBody("application/json".toMediaTypeOrNull()))
+        coEvery { errorHandler.parseError(error) } returns moshi.adapter(ApiErrorResponse::class.java).fromJson(GetApiErrorResponse.apiErrorResponse)
+        coEvery { callBackObj.serviceActionCallBack() } returns error
 
         val callServiceResponseObj = repository.callService { callBackObj.serviceActionCallBack() }
 
@@ -153,6 +102,8 @@ class BaseRepositoryTest {
         assertThat(callServiceResponseObj).isInstanceOf(Resource.Error::class.java)
         /** returned error should be contains response code of error **/
         assertThat((callServiceResponseObj as Resource.Error).message).contains(": 404")
+        assertThat(callServiceResponseObj.message).contains("Parse Error")
+        assertThat(callServiceResponseObj.message).contains("Dummy Name")
 
         /** call back should be fired. **/
         coVerify (exactly = 1) { callBackObj.serviceActionCallBack() }
@@ -160,32 +111,7 @@ class BaseRepositoryTest {
     }
 
     @Test
-    fun `MODEL B - Network is ok, callService function is called, returns Resource-Error on unsuccessful response code`() = runBlockingTest {
-        every { networkChecker.isNetworkConnected() } returns true
-        coEvery { callBackObj.serviceActionCallBack() } returns Response.error(404, "{\"error\":[\"404 Not Found\"]}"
-            .toResponseBody("application/json".toMediaTypeOrNull()))
-        coEvery { callBackObj.responseMappingActionCallBack(any()) } returns Resource.Success(200)
-
-        val callServiceResponseObj = repository.callService(
-            retrofitServiceAction = { callBackObj.serviceActionCallBack() },
-            customResponseMappingAction = {
-                callBackObj.responseMappingActionCallBack(it)
-            }
-        )
-
-        /** repository function response type should be Resource.Error **/
-        assertThat(callServiceResponseObj).isInstanceOf(Resource.Error::class.java)
-        /** returned error should be contains response code of error **/
-        assertThat((callServiceResponseObj as Resource.Error).message).contains(": 404")
-
-        /** call back should be fired. **/
-        coVerify (exactly = 1) { callBackObj.serviceActionCallBack() }
-        coVerify (exactly = 0) { callBackObj.responseMappingActionCallBack(any()) }
-        confirmVerified(callBackObj)
-    }
-
-    @Test
-    fun `MODEL A - Network is ok, callService function is called, returns Resource-Error for network error`() = runBlockingTest {
+    fun `Network is ok, callService function is called, returns Resource-Error for network error`() = runBlockingTest {
         every { networkChecker.isNetworkConnected() } returns false
         coEvery { callBackObj.serviceActionCallBack() } returns Response.success("Rest Call Succeeded")
 
@@ -204,34 +130,7 @@ class BaseRepositoryTest {
     }
 
     @Test
-    fun `MODEL B - Network is ok, callService function is called, returns Resource-Error for network error`() = runBlockingTest {
-        every { networkChecker.isNetworkConnected() } returns false
-        coEvery { callBackObj.serviceActionCallBack() } returns Response.success("Rest Call Succeeded")
-        coEvery { callBackObj.responseMappingActionCallBack(any()) } returns Resource.Success(200)
-
-        val callServiceResponseObj = repository.callService(
-            retrofitServiceAction = { callBackObj.serviceActionCallBack() },
-            customResponseMappingAction = {
-                callBackObj.responseMappingActionCallBack(it)
-            }
-        )
-        /** Network is not connected. **/
-
-        /** repository function response type should be Resource.Error **/
-        assertThat(callServiceResponseObj).isInstanceOf(Resource.Error::class.java)
-        /** returned error should be network error message **/
-        assertThat((callServiceResponseObj as Resource.Error).message).isEqualTo("Couldn't reached to server. Please check your internet connection")
-
-        /** call back shouldn't be fired. **/
-        coVerify (exactly = 0) {
-            callBackObj.serviceActionCallBack()
-            callBackObj.responseMappingActionCallBack(any())
-        }
-        confirmVerified(callBackObj)
-    }
-
-    @Test
-    fun `MODEL A - An exception is occurred during call Service`() = runBlockingTest {
+    fun `An exception is occurred during call Service`() = runBlockingTest {
         every { networkChecker.isNetworkConnected() } returns true
         coEvery { callBackObj.serviceActionCallBack() } throws Exception()
 
@@ -246,29 +145,4 @@ class BaseRepositoryTest {
         coVerify (exactly = 1) { callBackObj.serviceActionCallBack() }
         confirmVerified(callBackObj)
     }
-
-    @Test
-    fun `MODEL B - An exception is occurred during call Service`() = runBlockingTest {
-        every { networkChecker.isNetworkConnected() } returns true
-        coEvery { callBackObj.serviceActionCallBack() } throws Exception()
-        coEvery { callBackObj.responseMappingActionCallBack(any()) } returns Resource.Success(200)
-
-        val callServiceResponseObj = repository.callService(
-            retrofitServiceAction = { callBackObj.serviceActionCallBack() },
-            customResponseMappingAction = {
-                callBackObj.responseMappingActionCallBack(it)
-            }
-        )
-
-        /** repository function response type should be Resource.Error **/
-        assertThat(callServiceResponseObj).isInstanceOf(Resource.Error::class.java)
-        /** returned error message should be unexpected error **/
-        assertThat((callServiceResponseObj as Resource.Error).message).isEqualTo("UnExpected Service Exception.")
-
-        /** call back should be fired. **/
-        coVerify (exactly = 1) { callBackObj.serviceActionCallBack() }
-        coVerify (exactly = 0) { callBackObj.responseMappingActionCallBack(any()) }
-        confirmVerified(callBackObj)
-    }
-
 }

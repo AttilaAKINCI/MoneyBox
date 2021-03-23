@@ -1,99 +1,170 @@
 package com.akinci.moneybox.feature.login.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.akinci.moneybox.common.helper.InformerStatus
-import com.akinci.moneybox.common.storage.LocalPreferenceConfig
-import com.akinci.moneybox.getOrAwaitValueTest
+import androidx.lifecycle.Observer
+import com.akinci.moneybox.ahelpers.InstantExecutorExtension
+import com.akinci.moneybox.ahelpers.TestContextProvider
+import com.akinci.moneybox.common.helper.Resource
+import com.akinci.moneybox.common.storage.Preferences
+import com.akinci.moneybox.feature.login.data.output.LoginServiceResponse
+import com.akinci.moneybox.feature.login.repository.LoginRepository
+import com.akinci.moneybox.jsonresponses.GetLoginResponse
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.Moshi
+import io.mockk.*
+import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
+@ExperimentalCoroutinesApi
+@ExtendWith(InstantExecutorExtension::class)
 class LoginViewModelTest {
+
+    @MockK
+    private lateinit var loginRepository : LoginRepository
+
+    @MockK
+    private lateinit var sharedPreferences : Preferences
 
     private lateinit var loginViewModel : LoginViewModel
 
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    private val coroutineContext = TestContextProvider()
+    private val moshi = Moshi.Builder().build()
 
-    @ExperimentalCoroutinesApi
-    @get:Rule
-    val mainCoroutineRule = MainCoroutineRule()
-
-    private lateinit var fakeLocalPreferences: FakeLocalPreferences
-    private lateinit var fakeLoginRepository: FakeLoginRepository
-
-    @Before
+    @BeforeEach
     fun setup(){
-        fakeLocalPreferences =  FakeLocalPreferences()
-        fakeLoginRepository = FakeLoginRepository()
-        loginViewModel = LoginViewModel(fakeLoginRepository, fakeLocalPreferences)
+        MockKAnnotations.init(this, relaxUnitFun = true)
+        loginViewModel = LoginViewModel(coroutineContext, loginRepository, sharedPreferences)
     }
 
-    @Test
-    fun `attempt login with empty inputs returns error`(){
+    @AfterEach
+    fun tearDown() { unmockkAll() }
 
+    @Test
+    fun `validate input fields with empty email returns false`(){
         loginViewModel.email.value = ""
-        loginViewModel.password.value = ""
-        loginViewModel.name.value = ""
+        loginViewModel.password.value ="P455word12"
 
-        loginViewModel.login()
+        val emailObserver = mockk<Observer<Boolean>>(relaxed = true)
+        val emailSlot = slot<Boolean>()
 
-        val loginEventHandlerResp = loginViewModel.loginEventHandler.getOrAwaitValueTest()
+        val passwordObserver = mockk<Observer<Boolean>>(relaxed = true)
+        val passwordSlot = slot<Boolean>()
 
-        assertThat(loginEventHandlerResp.status).isEqualTo(InformerStatus.ERROR)
+        loginViewModel.emailValid.observeForever(emailObserver)
+        loginViewModel.passwordValid.observeForever(passwordObserver)
+
+        val isValid = loginViewModel.validateInputFields()
+
+        verify { emailObserver.onChanged(capture(emailSlot)) }
+        verify { passwordObserver.onChanged(capture(passwordSlot)) }
+
+        val emailCapturedValue = emailSlot.captured
+        val passwordCapturedValue = passwordSlot.captured
+
+        assertThat(emailCapturedValue).isFalse()
+        assertThat(passwordCapturedValue).isTrue()
+        assertThat(isValid).isFalse()
     }
 
     @Test
-    fun `attempt login with empty name returns ok`(){
+    fun `validate input fields with empty password returns false`(){
+        loginViewModel.email.value = "jaeren+androidtest@moneyboxapp.com"
+        loginViewModel.password.value =""
 
+        val emailObserver = mockk<Observer<Boolean>>(relaxed = true)
+        val emailSlot = slot<Boolean>()
+
+        val passwordObserver = mockk<Observer<Boolean>>(relaxed = true)
+        val passwordSlot = slot<Boolean>()
+
+        loginViewModel.emailValid.observeForever(emailObserver)
+        loginViewModel.passwordValid.observeForever(passwordObserver)
+
+        val isValid = loginViewModel.validateInputFields()
+
+        verify { emailObserver.onChanged(capture(emailSlot)) }
+        verify { passwordObserver.onChanged(capture(passwordSlot)) }
+
+        val emailCapturedValue = emailSlot.captured
+        val passwordCapturedValue = passwordSlot.captured
+
+        assertThat(emailCapturedValue).isTrue()
+        assertThat(passwordCapturedValue).isFalse()
+        assertThat(isValid).isFalse()
+    }
+
+    @Test
+    fun `validate input fields with any email and password returns true`(){
+        loginViewModel.email.value = "jaeren+androidtest@moneyboxapp.com"
+        loginViewModel.password.value ="P455word12"
+
+        val emailObserver = mockk<Observer<Boolean>>(relaxed = true)
+        val emailSlot = slot<Boolean>()
+
+        val passwordObserver = mockk<Observer<Boolean>>(relaxed = true)
+        val passwordSlot = slot<Boolean>()
+
+        loginViewModel.emailValid.observeForever(emailObserver)
+        loginViewModel.passwordValid.observeForever(passwordObserver)
+
+        val isValid = loginViewModel.validateInputFields()
+
+        verify { emailObserver.onChanged(capture(emailSlot)) }
+        verify { passwordObserver.onChanged(capture(passwordSlot)) }
+
+        val emailCapturedValue = emailSlot.captured
+        val passwordCapturedValue = passwordSlot.captured
+
+        assertThat(emailCapturedValue).isTrue()
+        assertThat(passwordCapturedValue).isTrue()
+        assertThat(isValid).isTrue()
+    }
+
+    @Test
+    fun `attempt successful login returns ok`(){
         loginViewModel.email.value = "jaeren+androidtest@moneyboxapp.com"
         loginViewModel.password.value = "P455word12"
         loginViewModel.name.value = ""  // <---- optional field
 
+        coEvery { loginRepository.login(any()) } returns Resource.Success(
+            moshi.adapter(LoginServiceResponse::class.java).fromJson(GetLoginResponse.loginResponse)
+        )
+
+        val observer = mockk<Observer<Resource<Boolean>>>(relaxed = true)
+        val slot = slot<Resource<Boolean>>()
+
+        loginViewModel.loginEventHandler.observeForever(observer)
+
         loginViewModel.login()
 
-        val loginEventHandlerResp = loginViewModel.loginEventHandler.getOrAwaitValueTest()
+        verify { observer.onChanged(capture(slot)) }
+        val value = slot.captured as Resource.Success
+        assertThat(value.data).isTrue()
 
-        assertThat(loginEventHandlerResp.status).isEqualTo(InformerStatus.SUCCESS)
+        verify (atLeast = 1) { sharedPreferences.setStoredTag(any(), any()) }
     }
 
     @Test
-    fun `attempt login and check stored values that they are not empty`(){
-
+    fun `attempt login with empty response body returns error`(){
         loginViewModel.email.value = "jaeren+androidtest@moneyboxapp.com"
         loginViewModel.password.value = "P455word12"
-        loginViewModel.name.value = "Jaeren"  // <---- optional field
+        loginViewModel.name.value = ""  // <---- optional field
 
-        //assume login successful because I tested this part previous test case
+        coEvery { loginRepository.login(any()) } returns Resource.Success(null)
+
+        val observer = mockk<Observer<Resource<Boolean>>>(relaxed = true)
+        val slot = slot<Resource<Boolean>>()
+
+        loginViewModel.loginEventHandler.observeForever(observer)
+
         loginViewModel.login()
 
-        // if no problem with login. check shared pref inserts
-        val token = fakeLocalPreferences.getStoredTag(LocalPreferenceConfig.AUTH_TOKEN)
-        val userName = fakeLocalPreferences.getStoredTag(LocalPreferenceConfig.USERNAME)
-
-        assertThat(token).isNotEmpty()
-        assertThat(userName).isNotEmpty()
-    }
-
-    @Test
-    fun `attempt login and get network error return error`(){
-        loginViewModel.email.value = "jaeren+androidtest@moneyboxapp.com"
-        loginViewModel.password.value = "P455word12"
-        loginViewModel.name.value = "Jaeren"  // <---- optional field
-
-        //network error should be fired.
-        fakeLoginRepository.setShouldReturnNetworkError(true)
-
-        //assume login successful because I tested this part previous test case
-        loginViewModel.login()
-
-        val loginEventHandlerResp = loginViewModel.loginEventHandler.getOrAwaitValueTest()
-
-        assertThat(loginEventHandlerResp.status).isEqualTo(InformerStatus.ERROR)
-        assertThat(loginEventHandlerResp.message).contains("Couldn't reached to server")
+        verify { observer.onChanged(capture(slot)) }
+        val value = slot.captured as Resource.Error
+        assertThat(value.message).isEqualTo("Response data is empty")
     }
 
     @Test
@@ -102,19 +173,18 @@ class LoginViewModelTest {
         loginViewModel.password.value = "P455word12"
         loginViewModel.name.value = "Jaeren"  // <---- optional field
 
-        //server error should be fired.
-        fakeLoginRepository.setShouldReturnServerError(true)
+        coEvery { loginRepository.login(any()) } returns Resource.Error("Login Service encounter an error")
 
-        //assume login successful because I tested this part previous test case
+        val observer = mockk<Observer<Resource<Boolean>>>(relaxed = true)
+        val slot = slot<Resource<Boolean>>()
+
+        loginViewModel.loginEventHandler.observeForever(observer)
+
         loginViewModel.login()
 
-        val loginEventHandlerResp = loginViewModel.loginEventHandler.getOrAwaitValueTest()
-
-        assertThat(loginEventHandlerResp.status).isEqualTo(InformerStatus.ERROR)
-        assertThat(loginEventHandlerResp.message).contains("server error")
+        verify { observer.onChanged(capture(slot)) }
+        val value = slot.captured as Resource.Error
+        assertThat(value.message).isEqualTo("Login Service encounter an error")
     }
-
-    @After
-    fun tearDown(){ /** NO NEED **/ }
 
 }

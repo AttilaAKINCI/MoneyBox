@@ -3,7 +3,8 @@ package com.akinci.moneybox.jsonresponses
 class GetLoginResponse {
     companion object{
         val loginResponse = """
-             {
+        { 
+            "User": {
                 "UserId": "947002e4-4b6a-43ff-9f3d-0d939ef2dbaf",
                 "HasVerifiedEmail": true,
                 "IsPinSet": true,

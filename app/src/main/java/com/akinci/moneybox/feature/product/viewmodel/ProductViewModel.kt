@@ -64,7 +64,7 @@ class ProductViewModel @Inject constructor(
         _userName.value = sharedPreferences.getStoredTag(LocalPreferenceConfig.USERNAME)
     }
 
-    fun clearSelectedProduct(){ _selectedProduct.value = null }
+    fun clearSelectedProduct(){ _selectedProduct = MutableLiveData<ProductResponse>() }
     fun selectProduct(selectedProductId : Int){
         _selectedProduct.value = _productServiceResponse.value?.ProductResponses?.find { it.Id == selectedProductId }
     }

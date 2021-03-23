@@ -34,7 +34,7 @@ open class BaseRepositoryImpl constructor(
                     val errorResponse = restErrorHandler.parseError(response)
                     Resource.Error("Login couldn't completed. \n" +
                             "\nReason : ${errorResponse?.Name}" +
-                            "\nMessage :  ${errorResponse?.Message}" + response.code())
+                            "\nMessage :  ${errorResponse?.Message}" +"Code: "+ response.code())
                 }
             }else{
                 // not connected to internet

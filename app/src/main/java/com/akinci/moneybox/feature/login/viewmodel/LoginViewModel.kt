@@ -1,6 +1,5 @@
 package com.akinci.moneybox.feature.login.viewmodel
 
-import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,10 +23,10 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     /** validation Live Data members **/
-    private val _emailValid = MutableLiveData(true)
+    private val _emailValid = MutableLiveData<Boolean>()
     val emailValid : LiveData<Boolean> = _emailValid
 
-    private val _passwordValid = MutableLiveData(true)
+    private val _passwordValid = MutableLiveData<Boolean>()
     val passwordValid : LiveData<Boolean> = _passwordValid
 
     /** sends feedback to UI layer using this event handler **/
@@ -47,22 +46,16 @@ class LoginViewModel @Inject constructor(
         Timber.d("LoginViewModel created..")
     }
 
-    fun activateValidation(){
-        // initially fires the validations
-        if(TextUtils.isEmpty(email.value)){ email.value = "" }
-        if(TextUtils.isEmpty(password.value)){ password.value = ""}
-    }
-
-    private fun validateInputFields() : Boolean {
+    fun validateInputFields() : Boolean {
         email.value?.let {
-            if(it.isEmpty()){ _emailValid.postValue(false) }
+            _emailValid.postValue(it.isNotEmpty())
         }
 
         password.value?.let {
-            if(it.isEmpty()){ _passwordValid.postValue(false) }
+            _passwordValid.postValue(it.isNotEmpty())
         }
 
-        return (_emailValid.value!! && _passwordValid.value!!)
+        return (email.value!!.isNotEmpty() && password.value!!.isNotEmpty())
     }
 
     fun login() {

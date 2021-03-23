@@ -57,8 +57,6 @@ class LoginFragment : Fragment() {
 
         binding.btnSignIn.setOnClickListener {
 
-
-            loginViewModel.activateValidation()
             // validate ui components
             // isValid checks editTexts are filled and error free
             if(binding.etEmail.isValid() && binding.etPassword.isValid()){

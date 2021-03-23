@@ -4,8 +4,7 @@ class AddMoneyResponse {
     companion object{
         val addMoneyResponse = """
             {
-              "Amount": 20,
-              "InvestorProductId": 6135 
+              "Moneybox": 520.00
             } 
         """
     }

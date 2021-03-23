@@ -1,7 +1,7 @@
 package com.akinci.moneybox.common.storage
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
+import com.akinci.moneybox.di.TestAppModule
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -10,7 +10,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
-import javax.inject.Named
 
 @SmallTest
 @HiltAndroidTest
@@ -20,17 +19,16 @@ class LocalPreferencesAndroidTest {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
-    // this rule provides coroutines process sequentially in the scope
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
-
     @Before
     fun setup(){
         hiltRule.inject() // with this command hilt injects parameters
     }
 
+    @After
+    fun tearDown(){ /** NO NEED **/ }
+
     @Inject
-    @Named("test-localPreference")
+    @TestAppModule.TestLocalPreference
     lateinit var sharedPreferences : Preferences
 
     @Test
@@ -42,8 +40,5 @@ class LocalPreferencesAndroidTest {
 
         assertThat(insertValue).isEqualTo(fetchedValue)
     }
-
-    @After
-    fun tearDown(){ /** NO NEED **/ }
 
 }
