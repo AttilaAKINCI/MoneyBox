@@ -4,13 +4,22 @@
 MoneyBox application consist of 4 fragments and 1 root activity. Root activity holds a container layout in order to
 manage fragments which will be controlled by navigation component.
 
-[APK Link (https://drive.google.com/file/d/1DhOmHSM0OYVD6mK2O4B97mNZ0GwVvrAn/view?usp=sharing)](https://drive.google.com/file/d/1DhOmHSM0OYVD6mK2O4B97mNZ0GwVvrAn/view?usp=sharing)
+[APK Link (https://drive.google.com/file/d/16TcQnntYwqNocY8Gj_bhWM7iqON-cQR1/view?usp=sharing)](https://drive.google.com/file/d/16TcQnntYwqNocY8Gj_bhWM7iqON-cQR1/view?usp=sharing)
 
 Fragments :
 * SplashFragment
 * LoginFragment
 * ProductListFragment
 * ProductDetailFragment
+
+## App Video 
+
+            Normal Run                 Login Validations             Login Token Expire             Download Permission
+
+<img src="https://user-images.githubusercontent.com/21987335/112744968-6154e580-8fad-11eb-8356-c2368f339173.gif" width="220"/> &nbsp; <img 
+src="https://user-images.githubusercontent.com/21987335/112745020-c4df1300-8fad-11eb-845f-40f2fe298f42.gif" width="220"/> &nbsp; <img 
+src="https://user-images.githubusercontent.com/21987335/112745043-fb1c9280-8fad-11eb-8659-943f2c13041e.gif" width="220"/> &nbsp; <img 
+src="https://user-images.githubusercontent.com/21987335/112745046-fd7eec80-8fad-11eb-90a3-29575d09515b.gif" width="220"/>
 
 ## MVVM Design
 Each UI part or application is assumed as independent feature so each feature has view, viewmodel and model(shown as data group) part of architecture.
