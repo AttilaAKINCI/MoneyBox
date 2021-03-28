@@ -36,17 +36,20 @@ src="https://user-images.githubusercontent.com/21987335/112745046-fd7eec80-8fad-
 * Timber Client logging
 * Dependency Injection (HILT) 
 * DataBinding
+* Permissions
+* Glide Image Loading
 * Thruth (assertions)
+* MockK, JUnit5 for unit Testing
+* JUnit4 for integration tests 
 * RecyclerView with List Adapter and DiffUtil
 * Transition animation between fragments
 * Single Activity multiple Fragments approach
-* Unit testing samples & HILT integrations for testing
 
 ## MVVM Design
 Each UI part or application is assumed as independent feature so each feature has view, viewmodel and model(shown as data group) part of architecture.
 Necessary abstractions are applied so as to ensure injections and polymorphic usages of clases.
 
-UI, ViewModel, Repository layers are seperated and they communicate each other with event base informers(resource-informer-observer). 
+UI, ViewModel, Repository layers are seperated and they communicate each other with event base informers(Resource). 
 
 ## Data sharing between fragments
 There are couple ways to achieve that. In this task example, I have used activity scoped viewmodels in order to 
@@ -57,16 +60,15 @@ MoneyBox application makes network requests in order to acquire some user depend
 errors can be occured during runtime. 
 
 For network requests HTTP responses between 200 and 299 indicates that successful communication, between 400 and 599
-indicates error which has to be handled.
+indicates error which has to be handled. (BaseRepositoryImpl.kt)
 
 Reposity layer handles that errors and informs ViewModel Layer with Resource type.
-ViewModel Layer is informs UI layer with Informer type if it necessary.
+ViewModel Layer is informs UI layer using LiveData objects if it necessary.
 
 Notes: `Optional json field should be marked as nullable ( ? ) otherwise service response can not be mapped to data class`
 
 ## Testing
-For unit tests, I created fake version of repositories and some utility classes. Fake versions use same interface 
-in order to make easier to test viewmodels.
+For unit tests, I have used MockK library with JUnit5 for Unit testing and JUnit4 for integration tests
 
 Context dependent tests are placed under androidTest folder, Independent class and utility tests are placed 
 under test folder.
@@ -108,10 +110,10 @@ After some amount of time owl and company logo are moved with fragment transitio
 
 #### LoginFragment
 In Login fragment 3 different input fields (email, password, name) and 1 login button is placed. name field is processed
-as optional and not empty validation checks are applied to email and password fields using xml binding adapters.
+as optional and not empty validation checks are applied to email and password fields.
 
 If there is any validation error, UI automatically updated with information bubble. With the action of login button, 
-fields are controlled again and view triggers viewmodel function in order to send server request using databinding features.
+view triggers viewmodel function in order to send server request using databinding features.
 
 owl icon at the bottom is moved to new place at the headerview of ProductListFragment after successful login action.
 
