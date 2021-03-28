@@ -48,8 +48,7 @@
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="@={vm.email}"
-                notEmptyValid="@{vm.emailValid}"/>
+                android:text="@={vm.email}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,8 +71,7 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="@={vm.password}"
-                notEmptyValid="@{vm.passwordValid}"/>
+                android:text="@={vm.password}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

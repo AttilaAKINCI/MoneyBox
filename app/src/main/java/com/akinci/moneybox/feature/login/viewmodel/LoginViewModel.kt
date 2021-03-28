@@ -22,13 +22,6 @@ class LoginViewModel @Inject constructor(
     private val sharedPreferences: Preferences
 ) : ViewModel() {
 
-    /** validation Live Data members **/
-    private val _emailValid = MutableLiveData<Boolean>()
-    val emailValid : LiveData<Boolean> = _emailValid
-
-    private val _passwordValid = MutableLiveData<Boolean>()
-    val passwordValid : LiveData<Boolean> = _passwordValid
-
     /** sends feedback to UI layer using this event handler **/
     private val _loginEventHandler = MutableLiveData<Resource<Boolean>>()
     val loginEventHandler : LiveData<Resource<Boolean>> = _loginEventHandler
@@ -46,46 +39,32 @@ class LoginViewModel @Inject constructor(
         Timber.d("LoginViewModel created..")
     }
 
-    fun validateInputFields() : Boolean {
-        email.value?.let {
-            _emailValid.postValue(it.isNotEmpty())
-        }
-
-        password.value?.let {
-            _passwordValid.postValue(it.isNotEmpty())
-        }
-
-        return (email.value!!.isNotEmpty() && password.value!!.isNotEmpty())
-    }
-
     fun login() {
-        if(validateInputFields()){
-            val request = LoginServiceRequest(
+        val request = LoginServiceRequest(
                 email.value!!,
                 password.value!!,
                 "ANYTHING"
-            )
+        )
 
-            viewModelScope.launch (coroutineContext.IO) {
-                when(val response = loginRepository.login(request)) {
-                    is Resource.Success -> {
-                        response.data?.let {
-                            // login completed successfully
-                            // store users name and bearer token
-                            sharedPreferences.setStoredTag(LocalPreferenceConfig.AUTH_TOKEN, it.Session.BearerToken)
-                            name.value?.let { username ->
-                                sharedPreferences.setStoredTag(LocalPreferenceConfig.USERNAME, username)
-                            }
+        viewModelScope.launch (coroutineContext.IO) {
+            when(val response = loginRepository.login(request)) {
+                is Resource.Success -> {
+                    response.data?.let {
+                        // login completed successfully
+                        // store users name and bearer token
+                        sharedPreferences.setStoredTag(LocalPreferenceConfig.AUTH_TOKEN, it.Session.BearerToken)
+                        name.value?.let { username ->
+                            sharedPreferences.setStoredTag(LocalPreferenceConfig.USERNAME, username)
+                        }
 
-                            // tell fragment to everything is ok and I can proceed to
-                            // dashboard(products)
-                            _loginEventHandler.postValue(Resource.Success(true))
-                        } ?: _loginEventHandler.postValue(Resource.Error("Response data is empty"))
-                    }
-                    is Resource.Error -> {
-                        // pass error message to fragment
-                        _loginEventHandler.postValue(Resource.Error(response.message))
-                    }
+                        // tell fragment to everything is ok and I can proceed to
+                        // dashboard(products)
+                        _loginEventHandler.postValue(Resource.Success(true))
+                    } ?: _loginEventHandler.postValue(Resource.Error("Response data is empty"))
+                }
+                is Resource.Error -> {
+                    // pass error message to fragment
+                    _loginEventHandler.postValue(Resource.Error(response.message))
                 }
             }
         }

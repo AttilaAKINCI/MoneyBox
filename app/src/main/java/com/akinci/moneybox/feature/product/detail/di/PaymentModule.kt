@@ -4,7 +4,6 @@ import com.akinci.moneybox.common.network.NetworkChecker
 import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
 import com.akinci.moneybox.feature.product.detail.data.api.PaymentServiceDao
 import com.akinci.moneybox.feature.product.detail.repository.PaymentRepository
-import com.akinci.moneybox.feature.product.detail.repository.PaymentRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,6 +30,6 @@ object PaymentModule {
             paymentServiceDao: PaymentServiceDao,
             networkChecker: NetworkChecker,
             restErrorHandler : ErrorHandler
-    ): PaymentRepository = PaymentRepositoryImpl(paymentServiceDao, networkChecker, restErrorHandler)
+    ) = PaymentRepository(paymentServiceDao, networkChecker, restErrorHandler)
 
 }

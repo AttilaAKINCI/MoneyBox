@@ -32,7 +32,7 @@ open class BaseRepositoryImpl constructor(
                     Timber.d("Service response failed: %s", response.errorBody().toString())
 
                     val errorResponse = restErrorHandler.parseError(response)
-                    Resource.Error("Login couldn't completed. \n" +
+                    Resource.Error("Service call couldn't completed. \n" +
                             "\nReason : ${errorResponse?.Name}" +
                             "\nMessage :  ${errorResponse?.Message}" +"Code: "+ response.code())
                 }

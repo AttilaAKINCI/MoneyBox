@@ -16,7 +16,7 @@ import androidx.transition.TransitionSet
 import com.akinci.moneybox.AppRootActivity
 import com.akinci.moneybox.R
 import com.akinci.moneybox.common.component.SnackBar
-import com.akinci.moneybox.common.extension.isValid
+import com.akinci.moneybox.common.extension.validateNotEmpty
 import com.akinci.moneybox.common.helper.Resource
 import com.akinci.moneybox.databinding.FragmentLoginBinding
 import com.akinci.moneybox.feature.login.viewmodel.LoginViewModel
@@ -56,21 +56,19 @@ class LoginFragment : Fragment() {
         /** **/
 
         binding.btnSignIn.setOnClickListener {
-
             // validate ui components
             // isValid checks editTexts are filled and error free
-            if(binding.etEmail.isValid() && binding.etPassword.isValid()){
+            if(binding.etEmail.validateNotEmpty() && binding.etPassword.validateNotEmpty()){
                 //components are valid...
                 //play own animation
                 binding.animation.playAnimation()
 
-                //call login coroutine service.
+                //call login coroutine service.ty
                 loginViewModel.login()
             }else{
                 SnackBar.make(binding.root,  "Please fill required fields.", SnackBar.LENGTH_LONG).show()
             }
         }
-
 
         Timber.d("LoginFragment created..")
         return binding.root

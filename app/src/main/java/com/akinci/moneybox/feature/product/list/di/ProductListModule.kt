@@ -4,7 +4,6 @@ import com.akinci.moneybox.common.network.NetworkChecker
 import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
 import com.akinci.moneybox.feature.product.list.data.api.ProductListServiceDao
 import com.akinci.moneybox.feature.product.list.repository.ProductListRepository
-import com.akinci.moneybox.feature.product.list.repository.ProductListRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,6 +30,6 @@ object ProductListModule {
             productListServiceDao: ProductListServiceDao,
             networkChecker: NetworkChecker,
             restErrorHandler : ErrorHandler
-    ): ProductListRepository = ProductListRepositoryImpl(productListServiceDao, networkChecker, restErrorHandler)
+    ) = ProductListRepository(productListServiceDao, networkChecker, restErrorHandler)
 
 }

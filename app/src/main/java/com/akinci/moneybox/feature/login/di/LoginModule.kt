@@ -4,7 +4,6 @@ import com.akinci.moneybox.common.network.NetworkChecker
 import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
 import com.akinci.moneybox.feature.login.data.api.LoginServiceDao
 import com.akinci.moneybox.feature.login.repository.LoginRepository
-import com.akinci.moneybox.feature.login.repository.LoginRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,7 +30,7 @@ object LoginModule {
             loginServiceDao: LoginServiceDao,
             networkChecker: NetworkChecker,
             restErrorHandler: ErrorHandler
-    ): LoginRepository = LoginRepositoryImpl(loginServiceDao, networkChecker, restErrorHandler)
+    ) = LoginRepository(loginServiceDao, networkChecker, restErrorHandler)
 
 
 }

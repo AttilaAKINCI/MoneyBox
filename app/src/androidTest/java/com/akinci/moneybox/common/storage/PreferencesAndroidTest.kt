@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @SmallTest
 @HiltAndroidTest
-class LocalPreferencesAndroidTest {
+class PreferencesAndroidTest {
 
     // this rule provides hilt injection
     @get:Rule

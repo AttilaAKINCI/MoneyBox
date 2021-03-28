@@ -19,6 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -113,7 +114,12 @@ class ProductViewModel @Inject constructor(
                     is Resource.Success -> {
                         response.data?.Moneybox?.let { newMoneyBoxValue ->
                             it.Moneybox = newMoneyBoxValue
-                            _selectedProduct.postValue(it)
+
+                            //pass this part to main thread for direct update of ui
+                            withContext(Dispatchers.Main) {
+                                _selectedProduct.value = it
+                            }
+
                             _paymentEventHandler.postValue(Event(Resource.Info(
                                 "Requested amount(£$quickAddDepositValue) has been added to your MoneyBox!!"
                             )))

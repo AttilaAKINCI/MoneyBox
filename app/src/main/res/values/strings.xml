@@ -40,4 +40,9 @@
     <string name="action_add_money">Add £%1$s</string>
     <string name="action_download_document">Download Document</string>
 
+
+    <!-- Text Input Field Not empty Validation -->
+    <string name="validation_text_input_edit_text_not_empty">Please fill required fields.</string>
+
+
 </resources>

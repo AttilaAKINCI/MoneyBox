@@ -13,7 +13,6 @@ import com.akinci.moneybox.common.network.errorhandler.ErrorHandler
 import com.akinci.moneybox.common.network.errorhandler.ErrorHandlerImpl
 import com.akinci.moneybox.common.storage.IntentParams
 import com.akinci.moneybox.common.storage.LocalPreferenceConfig
-import com.akinci.moneybox.common.storage.LocalPreferences
 import com.akinci.moneybox.common.storage.Preferences
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -64,7 +63,7 @@ object AppModule {
      * **/
     @Provides
     @Singleton
-    fun provideLocalPreferences(@ApplicationContext context: Context) : Preferences = LocalPreferences(context)
+    fun provideLocalPreferences(@ApplicationContext context: Context) : Preferences = Preferences(context)
     /** END **/
 
     /** File Downloader Integration
