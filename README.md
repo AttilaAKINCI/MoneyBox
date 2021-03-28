@@ -21,6 +21,27 @@ src="https://user-images.githubusercontent.com/21987335/112745020-c4df1300-8fad-
 src="https://user-images.githubusercontent.com/21987335/112745043-fb1c9280-8fad-11eb-8659-943f2c13041e.gif" width="220"/> &nbsp; <img 
 src="https://user-images.githubusercontent.com/21987335/112745046-fd7eec80-8fad-11eb-90a3-29575d09515b.gif" width="220"/>
 
+## 3rd party lib. usages & Tech Specs
+* Patterns
+    - MVVM design pattern
+    - Repository pattern for data management
+* JetPack Libs
+    - Navigation Component
+* Retrofit
+* Kotlin Coroutines
+* LiveData
+* Facebook Shimmer Lib.
+* Lottie animation Lib.
+* Moshi Json handler
+* Timber Client logging
+* Dependency Injection (HILT) 
+* DataBinding
+* Thruth (assertions)
+* RecyclerView with List Adapter and DiffUtil
+* Transition animation between fragments
+* Single Activity multiple Fragments approach
+* Unit testing samples & HILT integrations for testing
+
 ## MVVM Design
 Each UI part or application is assumed as independent feature so each feature has view, viewmodel and model(shown as data group) part of architecture.
 Necessary abstractions are applied so as to ensure injections and polymorphic usages of clases.
@@ -116,28 +137,6 @@ After service call UI automatically updates itself and also Product ListScreen u
 
 User can download some sepecial documents is related about product pressing 'Download Document' button according to permission 
 selection response.
-
-## 3rd party lib. usages & Tech Specs
-* Patterns
-    - MVVM design pattern
-    - Repository pattern for data management
-* JetPack Libs
-    - Navigation Component
-* Retrofit
-* Kotlin Coroutines
-* LiveData
-* Facebook Shimmer Lib.
-* Lottie animation Lib.
-* Moshi Json handler
-* Timber Client logging
-* Dependency Injection (HILT) 
-* DataBinding
-* Thruth (assertions)
-* RecyclerView with List Adapter and DiffUtil
-* Transition animation between fragments
-* Single Activity multiple Fragments approach
-* Unit testing samples & HILT integrations for testing
-
 
 #### Wire Frame
 <img src="https://github.com/AttilaAKINCI/MoneyBox/blob/main/images/wireframe.png" width="600">
