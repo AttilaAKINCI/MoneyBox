@@ -16,9 +16,9 @@ Fragments :
 
           Normal Run              Login Validations             Login Token Expire         Download Permission
 
-<img src="https://user-images.githubusercontent.com/21987335/112744968-6154e580-8fad-11eb-8356-c2368f339173.gif" width="200"/> &nbsp; <img 
-src="https://user-images.githubusercontent.com/21987335/112745020-c4df1300-8fad-11eb-845f-40f2fe298f42.gif" width="200"/> &nbsp; <img 
-src="https://user-images.githubusercontent.com/21987335/112745043-fb1c9280-8fad-11eb-8659-943f2c13041e.gif" width="200"/> &nbsp; <img 
+<img src="https://user-images.githubusercontent.com/21987335/112744968-6154e580-8fad-11eb-8356-c2368f339173.gif" width="200"/>  <img 
+src="https://user-images.githubusercontent.com/21987335/112745020-c4df1300-8fad-11eb-845f-40f2fe298f42.gif" width="200"/> <img 
+src="https://user-images.githubusercontent.com/21987335/112745043-fb1c9280-8fad-11eb-8659-943f2c13041e.gif" width="200"/> <img 
 src="https://user-images.githubusercontent.com/21987335/112745046-fd7eec80-8fad-11eb-90a3-29575d09515b.gif" width="200"/>
 
 ## 3rd party lib. usages & Tech Specs
