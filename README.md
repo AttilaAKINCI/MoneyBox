@@ -14,7 +14,7 @@ Fragments :
 
 ## App Video 
 
-          Normal Run              Login Validations             Login Token Expire         Download Permission
+          Normal Run              Login Validations          Login Token Expire         Download Permission
 
 <img src="https://user-images.githubusercontent.com/21987335/112744968-6154e580-8fad-11eb-8356-c2368f339173.gif" width="200"/>  <img 
 src="https://user-images.githubusercontent.com/21987335/112745020-c4df1300-8fad-11eb-845f-40f2fe298f42.gif" width="200"/> <img 
